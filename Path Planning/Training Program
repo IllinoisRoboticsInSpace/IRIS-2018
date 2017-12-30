@@ -1,0 +1,430 @@
+import Neural_Network as NN
+import math
+import numpy as np
+import random
+import operator
+
+'''training_data,validation_data,test_data= NN.load_data_wrapper()
+sizes=[784,30,10]
+NeuralNet=NN.Network(sizes,training_data,test_data)'''
+
+population_number=10
+class population(object):
+
+    def __init__(self, no_of_individuals):
+
+        self.startx=0
+        self.starty=0
+        self.goalx=50
+        self.goaly=50
+        self.currentx=0
+        self.currenty=0
+        self.slopex=1
+        self.slopey=1
+        self.pop=[]
+        self.genes=[]
+        self.children=[]
+        self.next_generation=[]
+        self.retainlength=10
+        self.random_select=0.15
+        self.mutate_chance=0.08
+        self.best_fitness=-100000
+        self.grid= [[0 for j in range(40)] for i in range(100)]
+        self.architecture=[9,15,5]
+        self.pop=[]
+        for i in range(no_of_individuals):
+            self.pop.append(NN.Network(self.architecture))
+
+        self.LetTheEvolutionBegin()
+
+        '''gene_weights=[]
+        for Net in pop:
+            gene_weights_indi=np.zeros((1,0))
+            for weights in Net.weights:
+                weights_indi=np.reshape(weights,(1,-1))
+                gene_weights_indi= np.hstack((gene_weights_indi,weights_indi))
+
+            gene_weights.append(gene_weights_indi)
+
+        gene_biases=[]
+        for Net in pop:
+            gene_biases_indi=np.zeros((1,0))
+            for biases in Net.biases:
+                biases_indi=np.reshape(biases,(1,-1))
+                gene_biases_indi= np.hstack((gene_biases_indi,biases_indi))
+
+            gene_biases.append(gene_biases_indi)
+
+        genes=[np.hstack((weights,biases)) for weights,biases in zip(gene_weights,gene_biases)]
+        '''
+
+
+    def breed(self, father, mother,left_spots):
+        # father and mother are a list of genes consisting of weights and biases
+
+        father=self.returnGenesWithNN(father)
+        mother=self.returnGenesWithNN(mother)
+        child=[0 for i in range(len(father))]
+        for i in range(2):
+
+            for i,(x,y) in enumerate(zip(father,mother)):
+                child[i]=random.choice([x,y])
+
+            if( len(self.children)< left_spots):
+                network= self.returnNeuralNetWithGenes(child,self.architecture)
+                self.children.append(network)
+
+
+
+    def mutate(self, genes):
+
+        genes=self.returnGenesWithNN(genes)
+        a=random.randint(0,len(genes)-1)
+        b=genes[a]
+        b=0.02*a
+        b=random.choice([b,-b])
+        #b=random.randint(-7,7)
+        genes[a]=genes[a]+b
+        return self.returnNeuralNetWithGenes(genes,self.architecture)
+
+    def evolve(self):
+
+        dictionary={}
+
+        for network in self.pop:
+            collide=0
+            time=0
+            self.currentx=self.startx
+            self.currenty=self.starty
+            while(not(collide)):
+
+                leftSensor, diagonalLeftSensor, frontSensor, diagonalRightSensor, rightSensor = self.calculateNNinputs()
+                direction = network.ForwardPropagation(self.currentx,self.currenty,self.goalx,self.goaly,leftSensor, diagonalLeftSensor, frontSensor, diagonalRightSensor, rightSensor) #forward prpagaation will need all 5 inputs
+                self.slopex,self.slopey= self.calculateSlopes(direction)
+                self.currentx+=self.slopex
+                self.currenty+=self.slopey
+                time+=1
+                if(self.currentx<0 or self.currentx>39 or self.currenty<0 or self.currenty>99 or self.grid[self.currenty][self.currentx]==1 or (self.currentx==self.goalx and self.currenty==self.goaly) ):
+                    collide=1
+
+            fitness= self.fitness(time)
+            dictionary[network]=fitness
+
+        sorted_dictionary = sorted(dictionary.items(), key=operator.itemgetter(1))
+
+        self.best_fitness= sorted_dictionary[0][1]
+        dict=[sorted_dictionary[i][0] for i in range(len(sorted_dictionary))]
+        self.next_generation=[]
+        self.next_generation=dict[:self.retainlength]
+
+
+        for individual in dict[self.retainlength:]:     #Retain some individuals anyway
+            if self.random_select > random.random():
+                self.next_generation.append(individual)
+
+        for individual in self.next_generation:
+            if self.mutate_chance > random.random():
+                individual = self.mutate(individual)
+
+        self.children=[]
+        left_spots=population_number-len(self.next_generation)
+
+        while(len(self.children)<left_spots):
+            # Get a random mom and dad.
+            male = random.randint(0, len(self.next_generation)-1)
+            female = random.randint(0, len(self.next_generation)-1)
+
+            if male != female:
+                male = self.next_generation[male]
+                female = self.next_generation[female]
+
+                self.breed(male,female,left_spots)
+
+        self.next_generation.extend(self.children)
+
+
+    def LetTheEvolutionBegin(self):
+
+        for i in range(100):
+            for j in range(40):
+                self.grid[i][j]=0
+        for i in range(23,28):
+            for j in range(8,13):
+                self.grid[i][j]=1
+        for i in range(23,28):
+            for j in range(28,33):
+                self.grid[i][j]=1
+        for i in range(73,78):
+            for j in range(8,13):
+                self.grid[i][j]=1
+        for i in range(73,78):
+            for j in range(28,33):
+                self.grid[i][j]=1
+
+
+
+        generation= 0
+        with open("Fitness.txt", "w") as output1:
+            while(generation<5000):
+                self.evolve()
+                if(generation%1==0):
+                    with open("Weights and Biases digit recognition.txt", "w") as output:
+                        output.write(str(generation))
+                        output.write(str(self.next_generation[0].weights))
+                        output.write(str(self.next_generation[0].biases))
+
+                    output1.write(str(generation))
+                    output1.write(str(self.best_fitness))
+                    output1.write("\n")
+
+                self.pop=self.next_generation
+                print "Generation ",generation
+                print "Fitness"
+                print self.best_fitness
+                generation+=1
+
+    def calculateNNinputs(self):
+        tempcurx=self.currentx
+        tempcury=self.currenty
+        leftSensor=0
+        diagonalLeftSensor=0
+        frontSensor=0
+        diagonalRightSensor=0
+        rightSensor=0
+
+        for i in range(3):
+            tempcurx+=self.slopex
+            tempcury+=self.slopey
+            if(tempcurx<0 or tempcurx>39 or tempcury<0 or tempcury>99 or self.grid[tempcury][tempcurx]==1):
+                frontSensor=1
+
+        tempcurx=self.currentx
+        tempcury=self.currenty
+        temp_slopex,temp_slopey = self.calculateSlopes(3)
+        for i in range(3):
+            tempcurx+=temp_slopex
+            tempcury+=temp_slopey
+            if(tempcurx<0 or tempcurx>39 or tempcury<0 or tempcury>99 or self.grid[tempcury][tempcurx]==1):
+                diagonalRightSensor=1
+
+        tempcurx=self.currentx
+        tempcury=self.currenty
+        temp_slopex,temp_slopey = self.calculateSlopes(4)
+        for i in range(3):
+            tempcurx+=temp_slopex
+            tempcury+=temp_slopey
+            if(tempcurx<0 or tempcurx>39 or tempcury<0 or tempcury>99 or self.grid[tempcury][tempcurx]==1):
+                rightSensor=1
+
+        tempcurx=self.currentx
+        tempcury=self.currenty
+        temp_slopex,temp_slopey = self.calculateSlopes(1)
+        for i in range(3):
+            tempcurx+=temp_slopex
+            tempcury+=temp_slopey
+            if(tempcurx<0 or tempcurx>39 or tempcury<0 or tempcury>99 or self.grid[tempcury][tempcurx]==1):
+                diagonalLeftSensor=1
+
+        tempcurx=self.currentx
+        tempcury=self.currenty
+        temp_slopex,temp_slopey = self.calculateSlopes(0)
+        for i in range(3):
+            tempcurx+=temp_slopex
+            tempcury+=temp_slopey
+            if(tempcurx<0 or tempcurx>39 or tempcury<0 or tempcury>99 or self.grid[tempcury][tempcurx]==1):
+                leftSensor=1
+
+        return leftSensor,diagonalLeftSensor,frontSensor,diagonalRightSensor,rightSensor
+
+    def returnGenesWithNN(self,NeuralNet):
+
+        gene_weights_indi=np.zeros((1,0))
+        for weights in NeuralNet.weights:
+            weights_indi=np.reshape(weights,(1,-1))
+            gene_weights_indi= np.hstack((gene_weights_indi,weights_indi))
+
+        gene_biases_indi=np.zeros((1,0))
+        for biases in NeuralNet.biases:
+            biases_indi=np.reshape(biases,(1,-1))
+            gene_biases_indi= np.hstack((gene_biases_indi,biases_indi))
+
+        genes=[np.hstack((gene_weights_indi,  gene_biases_indi))]
+        return genes
+
+    def returnNeuralNetWithGenes(self,genes,architecture):
+
+        #genes is a list of 1 element and the element is a numpy array
+        NeuralNet= NN.Network(architecture)
+        #print genes[0][0][0]
+        #layer1weight= genes[0][0]
+        layer1weight= genes[0][0][:(architecture[0]*architecture[1])]
+        layer2weight= genes[0][0][:(architecture[1]*architecture[2])]
+        bias_start= architecture[0]*architecture[1] +  architecture[1]*architecture[2]
+        layer1bias= genes[0][0][bias_start : bias_start+architecture[1]]
+        layer2bias= genes[0][0][bias_start+architecture[1]:bias_start+architecture[1]+architecture[2]]
+        #print len(layer1weight)
+        #print layer1weight
+        layer1weight=np.reshape(layer1weight,(1,architecture[0]*architecture[1]))
+
+        NeuralNet.weights=[np.reshape(layer1weight,(architecture[0],architecture[1]))]
+        NeuralNet.weights.append(np.reshape(layer2weight,(architecture[1],architecture[2])))
+
+        NeuralNet.biases= [np.reshape(layer1bias,(architecture[1],1))]
+        NeuralNet.biases.append(np.reshape(layer2bias,(architecture[2],1)))
+
+        return NeuralNet
+
+
+    def fitness(self,time):
+        if(self.currentx!=self.goalx and self.currenty!=self.goaly):
+            how_close= 1/math.sqrt(math.pow(self.goalx-self.currentx,2)+math.pow(self.goaly-self.currenty,2))
+            fitness=how_close
+        else:
+            fitness=1;
+        fitness=fitness-time
+        return fitness
+
+
+    def calculateSlopes(self,direction):
+        if direction==0:        #Left
+            if(self.slopex==1 and self.slopey==0):
+                temp_slopex=0
+                temp_slopey=-1
+                           #Will have to come back to this section of the code while testing to accurately change current x and currenty
+            elif(self.slopex==1 and self.slopey==-1):
+                temp_slopex=-1
+                temp_slopey=-1
+            elif(self.slopex==0 and self.slopey==-1):
+                temp_slopex=-1
+                temp_slopey=0
+            elif(self.slopex==-1 and self.slopey==-1):
+                temp_slopex=-1
+                temp_slopey=1
+            elif (self.slopex==-1 and self.slopey==0):
+                temp_slopex=0
+                temp_slopey=-1
+            elif(self.slopex==-1 and self.slopey==1):
+                temp_slopex=1
+                temp_slopey=1
+            elif(self.slopex==0 and self.slopey==1):
+                temp_slopex=1
+                temp_slopey=0
+            elif(self.slopex==1 and self.slopey==1):
+                temp_slopex=1
+                temp_slopey=-1
+
+
+        elif direction==1:      #diagonalLeft
+            if(self.slopex==1 and self.slopey==0):
+                temp_slopex=1
+                temp_slopey=-1
+                           #Will have to come back to this section of the code while testing to accurately change current x and currenty
+            elif(self.slopex==1 and self.slopey==-1):
+                temp_slopex=0
+                temp_slopey=-1
+            elif(self.slopex==0 and self.slopey==-1):
+                temp_slopex=-1
+                temp_slopey=-1
+            elif(self.slopex==-1 and self.slopey==-1):
+                temp_slopex=-1
+                temp_slopey=0
+            elif (self.slopex==-1 and self.slopey==0):
+                temp_slopex=-1
+                temp_slopey=1
+            elif(self.slopex==-1 and self.slopey==1):
+                temp_slopex=0
+                temp_slopey=1
+            elif(self.slopex==0 and self.slopey==1):
+                temp_slopex=1
+                temp_slopey=1
+            elif(self.slopex==1 and self.slopey==1):
+                temp_slopex=1
+                temp_slopey=0
+
+
+        elif direction==2:      #Front
+            if(self.slopex==1 and self.slopey==0):
+                temp_slopex=1
+                temp_slopey=0
+                           #Will have to come back to this section of the code while testing to accurately change current x and currenty
+            elif(self.slopex==1 and self.slopey==-1):
+                temp_slopex=1
+                temp_slopey=-1
+            elif(self.slopex==0 and self.slopey==-1):
+                temp_slopex=0
+                temp_slopey=-1
+            elif(self.slopex==-1 and self.slopey==-1):
+                temp_slopex=-1
+                temp_slopey=-1
+            elif (self.slopex==-1 and self.slopey==0):
+                temp_slopex=-1
+                temp_slopey=0
+            elif(self.slopex==-1 and self.slopey==1):
+                temp_slopex=-1
+                temp_slopey=1
+            elif(self.slopex==0 and self.slopey==1):
+                temp_slopex=0
+                temp_slopey=1
+            elif(self.slopex==1 and self.slopey==1):
+                temp_slopex=1
+                temp_slopey=1
+
+
+        elif direction==3:       #diagonalRight
+            if(self.slopex==1 and self.slopey==0):
+                temp_slopex=1
+                temp_slopey=1
+                           #Will have to come back to this section of the code while testing to accurately change current x and currenty
+            elif(self.slopex==1 and self.slopey==-1):
+                temp_slopex=1
+                temp_slopey=0
+            elif(self.slopex==0 and self.slopey==-1):
+                temp_slopex=1
+                temp_slopey=-1
+            elif(self.slopex==-1 and self.slopey==-1):
+                temp_slopex=0
+                temp_slopey=-1
+            elif (self.slopex==-1 and self.slopey==0):
+                temp_slopex=-1
+                temp_slopey=-1
+            elif(self.slopex==-1 and self.slopey==1):
+                temp_slopex=-1
+                temp_slopey=0
+            elif(self.slopex==0 and self.slopey==1):
+                temp_slopex=-1
+                temp_slopey=1
+            elif(self.slopex==1 and self.slopey==1):
+                temp_slopex=0
+                temp_slopey=1
+
+        elif direction==4:       #Right
+            if(self.slopex==1 and self.slopey==0):
+                temp_slopex=0
+                temp_slopey=1
+                           #Will have to come back to this section of the code while testing to accurately change current x and currenty
+            elif(self.slopex==1 and self.slopey==-1):
+                temp_slopex=1
+                temp_slopey=1
+            elif(self.slopex==0 and self.slopey==-1):
+                temp_slopex=1
+                temp_slopey=0
+            elif(self.slopex==-1 and self.slopey==-1):
+                temp_slopex=1
+                temp_slopey=-1
+            elif (self.slopex==-1 and self.slopey==0):
+                temp_slopex=0
+                temp_slopey=-1
+            elif(self.slopex==-1 and self.slopey==1):
+                temp_slopex=-1
+                temp_slopey=-1
+            elif(self.slopex==0 and self.slopey==1):
+                temp_slopex=-1
+                temp_slopey=0
+            elif(self.slopex==1 and self.slopey==1):
+                temp_slopex=-1
+                temp_slopey=1
+        return temp_slopex,temp_slopey
+
+
+a=population(population_number)
+#print a.fitness()
