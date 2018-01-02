@@ -3,18 +3,19 @@ import math
 import numpy as np
 import random
 import operator
+from memory_profiler import profile
 
 '''training_data,validation_data,test_data= NN.load_data_wrapper()
 sizes=[784,30,10]
 NeuralNet=NN.Network(sizes,training_data,test_data)'''
 
-population_number=10
+population_number=20
 class population(object):
 
     def __init__(self, no_of_individuals):
 
-        self.startx=0
-        self.starty=0
+        self.startx=6
+        self.starty=20
         self.goalx=50
         self.goaly=50
         self.currentx=0
@@ -25,15 +26,16 @@ class population(object):
         self.genes=[]
         self.children=[]
         self.next_generation=[]
-        self.retainlength=10
+        self.retainlength=7
         self.random_select=0.15
-        self.mutate_chance=0.08
+        self.mutate_chance=0.25
         self.best_fitness=-100000
         self.grid= [[0 for j in range(40)] for i in range(100)]
-        self.architecture=[9,15,5]
+        self.architecture=[9,10,5]
         self.pop=[]
         for i in range(no_of_individuals):
             self.pop.append(NN.Network(self.architecture))
+
 
         self.LetTheEvolutionBegin()
 
@@ -78,10 +80,11 @@ class population(object):
 
     def mutate(self, genes):
 
+
         genes=self.returnGenesWithNN(genes)
         a=random.randint(0,len(genes)-1)
         b=genes[a]
-        b=0.02*a
+        b=3*a
         b=random.choice([b,-b])
         #b=random.randint(-7,7)
         genes[a]=genes[a]+b
@@ -89,29 +92,45 @@ class population(object):
 
     def evolve(self):
 
+        print "started evolve method"
         dictionary={}
 
-        for network in self.pop:
+        for i,network in zip(range(len(self.pop)),self.pop):
             collide=0
             time=0
+            self.startx= random.randint(0,40)
+            self.starty=random.randint(0,100)
             self.currentx=self.startx
             self.currenty=self.starty
-            while(not(collide)):
-
+            while(not(collide) and time<1000):
+                #print i,time, "calculateNNinputs"
                 leftSensor, diagonalLeftSensor, frontSensor, diagonalRightSensor, rightSensor = self.calculateNNinputs()
+                #print i, "calculating direction"
+                #print leftSensor, diagonalLeftSensor, frontSensor, diagonalRightSensor, rightSensor
+                """if leftSensor==1 or diagonalLeftSensor==1 or frontSensor==1 or diagonalRightSensor==1 or rightSensor==1 :
+                    print "you have some meaning in life"
+                else:
+                    print "idk"
+                print self.currentx," ",self.currenty
+                print self.grid[self.currenty][self.currentx]"""
+
                 direction = network.ForwardPropagation(self.currentx,self.currenty,self.goalx,self.goaly,leftSensor, diagonalLeftSensor, frontSensor, diagonalRightSensor, rightSensor) #forward prpagaation will need all 5 inputs
+                #print direction
                 self.slopex,self.slopey= self.calculateSlopes(direction)
                 self.currentx+=self.slopex
                 self.currenty+=self.slopey
                 time+=1
                 if(self.currentx<0 or self.currentx>39 or self.currenty<0 or self.currenty>99 or self.grid[self.currenty][self.currentx]==1 or (self.currentx==self.goalx and self.currenty==self.goaly) ):
+                    print "Collided"
                     collide=1
-
-            fitness= self.fitness(time)
+            #print "Final Cooedinates"
+            #print self.currentx," ",self.currenty
+            fitness= self.fitness(time,collide)
             dictionary[network]=fitness
 
         sorted_dictionary = sorted(dictionary.items(), key=operator.itemgetter(1))
-
+        sorted_dictionary.reverse()
+        #print sorted_dictionary
         self.best_fitness= sorted_dictionary[0][1]
         dict=[sorted_dictionary[i][0] for i in range(len(sorted_dictionary))]
         self.next_generation=[]
@@ -122,16 +141,12 @@ class population(object):
             if self.random_select > random.random():
                 self.next_generation.append(individual)
 
-        for individual in self.next_generation:
-            if self.mutate_chance > random.random():
-                individual = self.mutate(individual)
-
         self.children=[]
         left_spots=population_number-len(self.next_generation)
 
         while(len(self.children)<left_spots):
             # Get a random mom and dad.
-            male = random.randint(0, len(self.next_generation)-1)
+            male = random.randint(0, len(self.next_generation)- 1)
             female = random.randint(0, len(self.next_generation)-1)
 
             if male != female:
@@ -141,7 +156,12 @@ class population(object):
                 self.breed(male,female,left_spots)
 
         self.next_generation.extend(self.children)
+        for individual in self.next_generation:
 
+            if self.mutate_chance > random.random():
+                print "mutating"
+                for i in range(15):
+                    individual = self.mutate(individual)
 
     def LetTheEvolutionBegin(self):
 
@@ -165,7 +185,15 @@ class population(object):
 
         generation= 0
         with open("Fitness.txt", "w") as output1:
-            while(generation<5000):
+            while(generation<500000):
+
+                #for i in range(20):
+                #    print self.returnGenesWithNN(self.pop[i]) #For testing purposes
+
+
+                self.genes=[]
+                self.children=[]
+                self.next_generation=[]
                 self.evolve()
                 if(generation%1==0):
                     with open("Weights and Biases digit recognition.txt", "w") as output:
@@ -174,13 +202,17 @@ class population(object):
                         output.write(str(self.next_generation[0].biases))
 
                     output1.write(str(generation))
+                    output1.write(",")
+
                     output1.write(str(self.best_fitness))
                     output1.write("\n")
+                    output1.flush()
 
                 self.pop=self.next_generation
                 print "Generation ",generation
                 print "Fitness"
                 print self.best_fitness
+
                 generation+=1
 
     def calculateNNinputs(self):
@@ -275,15 +307,30 @@ class population(object):
         return NeuralNet
 
 
-    def fitness(self,time):
+    def fitness(self,time,collide):
+
         if(self.currentx!=self.goalx and self.currenty!=self.goaly):
+            #fitness= math.sqrt(math.pow(self.goalx-self.currentx,2)+math.pow(self.goaly-self.currenty,2))
+            fitness= math.pow(self.goalx-self.currentx,2)+math.pow(self.goaly-self.currenty,2) - math.pow(self.goalx-self.startx,2)+math.pow(self.goaly-self.starty,2)
+            print fitness
+            print "fail"
+        else :
+            print "Success"
+            fitness=100
+        if(collide==1):
+            fitness-=0.5
+        fitness-=time
+        print fitness
+        #fitness=1/fitness
+        return fitness
+        '''if(self.currentx!=self.goalx and self.currenty!=self.goaly):
             how_close= 1/math.sqrt(math.pow(self.goalx-self.currentx,2)+math.pow(self.goaly-self.currenty,2))
             fitness=how_close
         else:
             fitness=1;
-        fitness=fitness-time
+        fitness=fitness-time+100
         return fitness
-
+        '''
 
     def calculateSlopes(self,direction):
         if direction==0:        #Left
