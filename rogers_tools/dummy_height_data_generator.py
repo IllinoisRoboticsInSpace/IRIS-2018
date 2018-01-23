@@ -3,7 +3,7 @@ import random
 import math
 from copy import deepcopy
 
-_black_pixel = 255
+_black_pixel = 1
 _possible_radius = 20
 _max_possible_height = 250
 
@@ -20,10 +20,13 @@ class coord_system:
     def display(self):
         return self.coord
 
+    def get_np_array(self):
+        return np.array(self.coord, np.uint8)
+
     def _horizontal_line(self, width = 1):
         line = random.randrange(0, self.height)
         for i in range(self.width):
-            self.coord[line][i] = int(float(i) / self.width * _black_pixel)
+            self.coord[line][i] = int(i * 2 / self.width * _black_pixel)
 
     def scramble(self, times = 1):
         if times == 0: return None
