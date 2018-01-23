@@ -17,9 +17,6 @@ class coord_system:
         self.width = width
         self.height = height
 
-    def get_np_array(self):
-        return np.array(self.coord)
-
     def display(self):
         return self.coord
 
@@ -47,7 +44,8 @@ class coord_system:
             for x in range(self.width):
                 distance = _distance_between_two_points(center[0], center[1], x, y)
                 if distance > radius: continue
-                self.coord[y][x] = max_height * (radius - distance) / radius
+                #self.coord[y][x] = max_height * (radius - distance) / radius
+                self.coord[x][y]=1
 
 '''
     def _circle_render(self, center, radius, max_height, x1, y1):
