@@ -17,6 +17,9 @@ class coord_system:
         self.width = width
         self.height = height
 
+    def get_np_array(self):
+        return np.array(self.coord)
+
     def display(self):
         return self.coord
 
