@@ -5,7 +5,7 @@ import random
 import operator
 from memory_profiler import profile
 import car_animation as ca
-import time
+import time as t
 
 '''training_data,validation_data,test_data= NN.load_data_wrapper()
 sizes=[784,30,10]
@@ -107,7 +107,7 @@ class population(object):
             self.starty=random.randint(0,100)
             self.currentx=self.startx
             self.currenty=self.starty
-            ca.drawMap(self.currentx,self.currenty)
+            self.car_animation.drawMap(self.currentx,self.currenty)
             while(not(collide) and time<1000):
                 #print i,time, "calculateNNinputs"
                 leftSensor, diagonalLeftSensor, frontSensor, diagonalRightSensor, rightSensor = self.calculateNNinputs()
@@ -125,13 +125,13 @@ class population(object):
                 self.slopex,self.slopey= self.calculateSlopes(direction)
                 self.currentx+=self.slopex
                 self.currenty+=self.slopey
-                ca.drawMap(self.currentx,self.currenty)
+                self.car_animation.drawMap(self.currentx,self.currenty)
                 time+=1
-                time.sleep(0.5)
+                #t.sleep(0.5)
                 #if(self.currentx<0 or self.currentx>39 or self.currenty<0 or self.currenty>99 or self.grid[self.currenty][self.currentx]==1 or (self.currentx==self.goalx and self.currenty==self.goaly) ):
                 #    print "Collided"
                 #    collide=1
-                if(self.currentx<0 or self.currentx>39 or self.currenty<0 or self.currenty>99 or car_animation.get_value(self.currentx,self.currenty)==1 or (self.currentx==self.goalx and self.currenty==self.goaly) ):
+                if(self.currentx<0 or self.currentx>39 or self.currenty<0 or self.currenty>99 or self.car_animation.get_value(self.currentx,self.currenty)==1 or (self.currentx==self.goalx and self.currenty==self.goaly) ):
                     print "Collided"
                     collide=1
             #print "Final Cooedinates"
@@ -241,7 +241,7 @@ class population(object):
             tempcury+=self.slopey
             #if(tempcurx<0 or tempcurx>39 or tempcury<0 or tempcury>99 or self.grid[tempcury][tempcurx]==1):
             #    frontSensor=1
-            if(tempcurx<0 or tempcurx>39 or tempcury<0 or tempcury>99 or car_animation.get_value(tempcurx,tempcury)==1):
+            if(tempcurx<0 or tempcurx>39 or tempcury<0 or tempcury>99 or self.car_animation.get_value(tempcurx,tempcury)==1):
                 frontSensor=1
 
         tempcurx=self.currentx
@@ -252,7 +252,7 @@ class population(object):
             tempcury+=temp_slopey
             #if(tempcurx<0 or tempcurx>39 or tempcury<0 or tempcury>99 or self.grid[tempcury][tempcurx]==1):
             #    diagonalRightSensor=1
-            if(tempcurx<0 or tempcurx>39 or tempcury<0 or tempcury>99 or car_animation.get_value(tempcurx,tempcury)==1):
+            if(tempcurx<0 or tempcurx>39 or tempcury<0 or tempcury>99 or self.car_animation.get_value(tempcurx,tempcury)==1):
                 diagonalRightSensor=1
 
         tempcurx=self.currentx
@@ -263,7 +263,7 @@ class population(object):
             tempcury+=temp_slopey
             #if(tempcurx<0 or tempcurx>39 or tempcury<0 or tempcury>99 or self.grid[tempcury][tempcurx]==1):
             #    rightSensor=1
-            if(tempcurx<0 or tempcurx>39 or tempcury<0 or tempcury>99 or car_animation.get_value(tempcurx,tempcury)==1):
+            if(tempcurx<0 or tempcurx>39 or tempcury<0 or tempcury>99 or self.car_animation.get_value(tempcurx,tempcury)==1):
                 rightSensor=1
 
         tempcurx=self.currentx
@@ -274,7 +274,7 @@ class population(object):
             tempcury+=temp_slopey
             #if(tempcurx<0 or tempcurx>39 or tempcury<0 or tempcury>99 or self.grid[tempcury][tempcurx]==1):
             #    diagonalLeftSensor=1
-            if(tempcurx<0 or tempcurx>39 or tempcury<0 or tempcury>99 or car_animation.get_value(tempcurx,tempcury)==1):
+            if(tempcurx<0 or tempcurx>39 or tempcury<0 or tempcury>99 or self.car_animation.get_value(tempcurx,tempcury)==1):
                 diagonalLeftSensor=1
 
         tempcurx=self.currentx
@@ -285,7 +285,7 @@ class population(object):
             tempcury+=temp_slopey
             #if(tempcurx<0 or tempcurx>39 or tempcury<0 or tempcury>99 or self.grid[tempcury][tempcurx]==1):
             #    leftSensor=1
-            if(tempcurx<0 or tempcurx>39 or tempcury<0 or tempcury>99 or car_animation.get_value(tempcurx,tempcury)==1):
+            if(tempcurx<0 or tempcurx>39 or tempcury<0 or tempcury>99 or self.car_animation.get_value(tempcurx,tempcury)==1):
                 leftSensor=1
 
         return leftSensor,diagonalLeftSensor,frontSensor,diagonalRightSensor,rightSensor
