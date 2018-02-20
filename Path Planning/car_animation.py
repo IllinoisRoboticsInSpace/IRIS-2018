@@ -10,7 +10,7 @@ class animation:
     def __init__(self):
         #self.pre_defined_map = dummy_data.coord_system(_map_size, _map_size)
         self.pre_defined_map = dummy_data.coord_system(40,100)
-        self.pre_defined_map.scramble(3)
+        self.pre_defined_map.scramble(2)
         self.pre_defined_map = self.pre_defined_map.get_np_array()
         self._car_width = self.pre_defined_map.shape[0] / 30
         #cv2.imshow('go', pre_defined_map)

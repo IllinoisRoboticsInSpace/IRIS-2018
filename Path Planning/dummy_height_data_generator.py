@@ -14,8 +14,8 @@ class coord_system:
     def __init__(self, width, height):
         a = [0 for i in range(width)]
         self.coord = [deepcopy(a) for i in range(height)]
-        self.width = width
-        self.height = height
+        self.width = width #40
+        self.height = height #100
 
     def display(self):
         return self.coord
@@ -48,7 +48,7 @@ class coord_system:
                 distance = _distance_between_two_points(center[0], center[1], x, y)
                 if distance > radius: continue
                 #self.coord[y][x] = max_height * (radius - distance) / radius
-                self.coord[x][y]=1
+                self.coord[y][x]=1
 
 '''
     def _circle_render(self, center, radius, max_height, x1, y1):

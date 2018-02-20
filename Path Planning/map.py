@@ -1,5 +1,4 @@
 import numpy as np
-import freenect
 import math
 
 dimX = 640
@@ -34,7 +33,7 @@ class map:
         return self.map[y, x]
 
     def update_my_location(self):
-        return (0, 0)
+        pass #it should update self.my_pos via localization code.
 
     def update_current_depth_frame(self):
         pass #it should update self._depth_frame with freenect
