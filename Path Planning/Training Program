@@ -4,6 +4,8 @@ import numpy as np
 import random
 import operator
 from memory_profiler import profile
+import car_animation as ca
+import time
 
 '''training_data,validation_data,test_data= NN.load_data_wrapper()
 sizes=[784,30,10]
@@ -14,6 +16,7 @@ class population(object):
 
     def __init__(self, no_of_individuals):
 
+        self.success=0
         self.startx=6
         self.starty=20
         self.goalx=50
@@ -26,16 +29,18 @@ class population(object):
         self.genes=[]
         self.children=[]
         self.next_generation=[]
-        self.retainlength=7
+        self.retainlength=10
         self.random_select=0.15
-        self.mutate_chance=0.25
+        self.mutate_chance=0.07
         self.best_fitness=-100000
-        self.grid= [[0 for j in range(40)] for i in range(100)]
+        #self.grid= [[0 for j in range(40)] for i in range(100)]
         self.architecture=[9,10,5]
         self.pop=[]
         for i in range(no_of_individuals):
             self.pop.append(NN.Network(self.architecture))
 
+        self.car_animation=ca.animation()
+        #if(input("Start from a trained generation(y/n)")=="y"):
 
         self.LetTheEvolutionBegin()
 
@@ -102,6 +107,7 @@ class population(object):
             self.starty=random.randint(0,100)
             self.currentx=self.startx
             self.currenty=self.starty
+            ca.drawMap(self.currentx,self.currenty)
             while(not(collide) and time<1000):
                 #print i,time, "calculateNNinputs"
                 leftSensor, diagonalLeftSensor, frontSensor, diagonalRightSensor, rightSensor = self.calculateNNinputs()
@@ -119,8 +125,13 @@ class population(object):
                 self.slopex,self.slopey= self.calculateSlopes(direction)
                 self.currentx+=self.slopex
                 self.currenty+=self.slopey
+                ca.drawMap(self.currentx,self.currenty)
                 time+=1
-                if(self.currentx<0 or self.currentx>39 or self.currenty<0 or self.currenty>99 or self.grid[self.currenty][self.currentx]==1 or (self.currentx==self.goalx and self.currenty==self.goaly) ):
+                time.sleep(0.5)
+                #if(self.currentx<0 or self.currentx>39 or self.currenty<0 or self.currenty>99 or self.grid[self.currenty][self.currentx]==1 or (self.currentx==self.goalx and self.currenty==self.goaly) ):
+                #    print "Collided"
+                #    collide=1
+                if(self.currentx<0 or self.currentx>39 or self.currenty<0 or self.currenty>99 or car_animation.get_value(self.currentx,self.currenty)==1 or (self.currentx==self.goalx and self.currenty==self.goaly) ):
                     print "Collided"
                     collide=1
             #print "Final Cooedinates"
@@ -156,7 +167,7 @@ class population(object):
                 self.breed(male,female,left_spots)
 
         self.next_generation.extend(self.children)
-        for individual in self.next_generation:
+        for individual in self.next_generation[2:]:
 
             if self.mutate_chance > random.random():
                 print "mutating"
@@ -165,6 +176,7 @@ class population(object):
 
     def LetTheEvolutionBegin(self):
 
+        '''
         for i in range(100):
             for j in range(40):
                 self.grid[i][j]=0
@@ -180,9 +192,7 @@ class population(object):
         for i in range(73,78):
             for j in range(28,33):
                 self.grid[i][j]=1
-
-
-
+        '''
         generation= 0
         with open("Fitness.txt", "w") as output1:
             while(generation<500000):
@@ -195,9 +205,11 @@ class population(object):
                 self.children=[]
                 self.next_generation=[]
                 self.evolve()
-                if(generation%1==0):
+                if(generation%10==0):
                     with open("Weights and Biases digit recognition.txt", "w") as output:
                         output.write(str(generation))
+                        output.write(str("\n Number of succeses\n"))
+                        output.write(str(str(self.success)+"\n"))
                         output.write(str(self.next_generation[0].weights))
                         output.write(str(self.next_generation[0].biases))
 
@@ -227,7 +239,9 @@ class population(object):
         for i in range(3):
             tempcurx+=self.slopex
             tempcury+=self.slopey
-            if(tempcurx<0 or tempcurx>39 or tempcury<0 or tempcury>99 or self.grid[tempcury][tempcurx]==1):
+            #if(tempcurx<0 or tempcurx>39 or tempcury<0 or tempcury>99 or self.grid[tempcury][tempcurx]==1):
+            #    frontSensor=1
+            if(tempcurx<0 or tempcurx>39 or tempcury<0 or tempcury>99 or car_animation.get_value(tempcurx,tempcury)==1):
                 frontSensor=1
 
         tempcurx=self.currentx
@@ -236,7 +250,9 @@ class population(object):
         for i in range(3):
             tempcurx+=temp_slopex
             tempcury+=temp_slopey
-            if(tempcurx<0 or tempcurx>39 or tempcury<0 or tempcury>99 or self.grid[tempcury][tempcurx]==1):
+            #if(tempcurx<0 or tempcurx>39 or tempcury<0 or tempcury>99 or self.grid[tempcury][tempcurx]==1):
+            #    diagonalRightSensor=1
+            if(tempcurx<0 or tempcurx>39 or tempcury<0 or tempcury>99 or car_animation.get_value(tempcurx,tempcury)==1):
                 diagonalRightSensor=1
 
         tempcurx=self.currentx
@@ -245,7 +261,9 @@ class population(object):
         for i in range(3):
             tempcurx+=temp_slopex
             tempcury+=temp_slopey
-            if(tempcurx<0 or tempcurx>39 or tempcury<0 or tempcury>99 or self.grid[tempcury][tempcurx]==1):
+            #if(tempcurx<0 or tempcurx>39 or tempcury<0 or tempcury>99 or self.grid[tempcury][tempcurx]==1):
+            #    rightSensor=1
+            if(tempcurx<0 or tempcurx>39 or tempcury<0 or tempcury>99 or car_animation.get_value(tempcurx,tempcury)==1):
                 rightSensor=1
 
         tempcurx=self.currentx
@@ -254,7 +272,9 @@ class population(object):
         for i in range(3):
             tempcurx+=temp_slopex
             tempcury+=temp_slopey
-            if(tempcurx<0 or tempcurx>39 or tempcury<0 or tempcury>99 or self.grid[tempcury][tempcurx]==1):
+            #if(tempcurx<0 or tempcurx>39 or tempcury<0 or tempcury>99 or self.grid[tempcury][tempcurx]==1):
+            #    diagonalLeftSensor=1
+            if(tempcurx<0 or tempcurx>39 or tempcury<0 or tempcury>99 or car_animation.get_value(tempcurx,tempcury)==1):
                 diagonalLeftSensor=1
 
         tempcurx=self.currentx
@@ -263,7 +283,9 @@ class population(object):
         for i in range(3):
             tempcurx+=temp_slopex
             tempcury+=temp_slopey
-            if(tempcurx<0 or tempcurx>39 or tempcury<0 or tempcury>99 or self.grid[tempcury][tempcurx]==1):
+            #if(tempcurx<0 or tempcurx>39 or tempcury<0 or tempcury>99 or self.grid[tempcury][tempcurx]==1):
+            #    leftSensor=1
+            if(tempcurx<0 or tempcurx>39 or tempcury<0 or tempcury>99 or car_animation.get_value(tempcurx,tempcury)==1):
                 leftSensor=1
 
         return leftSensor,diagonalLeftSensor,frontSensor,diagonalRightSensor,rightSensor
@@ -316,9 +338,10 @@ class population(object):
             print "fail"
         else :
             print "Success"
-            fitness=100
+            self.success+=1
+            fitness=100000
         if(collide==1):
-            fitness-=0.5
+            fitness-=1000
         fitness-=time
         print fitness
         #fitness=1/fitness
