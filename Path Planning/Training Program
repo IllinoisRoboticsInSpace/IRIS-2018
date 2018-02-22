@@ -6,6 +6,7 @@ import operator
 from memory_profiler import profile
 import car_animation as ca
 import time as t
+import cv2
 
 '''training_data,validation_data,test_data= NN.load_data_wrapper()
 sizes=[784,30,10]
@@ -107,7 +108,12 @@ class population(object):
             self.starty=random.randint(0,100)
             self.currentx=self.startx
             self.currenty=self.starty
-            self.car_animation.drawMap(self.currentx,self.currenty)
+			#self.car_animation.drawMap(self.currentx,self.currenty)
+            cv2.imshow("test", self.car_animation.animate(self.currentx, self.currenty))
+			 #vout.write(img)
+			 #vout.write(img)
+            if cv2.waitKey(1) & 0xFF == ord('q'):
+				 break
             while(not(collide) and time<1000):
                 #print i,time, "calculateNNinputs"
                 leftSensor, diagonalLeftSensor, frontSensor, diagonalRightSensor, rightSensor = self.calculateNNinputs()
@@ -125,14 +131,18 @@ class population(object):
                 self.slopex,self.slopey= self.calculateSlopes(direction)
                 self.currentx+=self.slopex
                 self.currenty+=self.slopey
-                self.car_animation.drawMap(self.currentx,self.currenty)
+                cv2.imshow("test", self.car_animation.animate(self.currentx, self.currenty))
+			        #vout.write(img)
+			        #vout.write(img)
+                if cv2.waitKey(1) & 0xFF == ord('q'):
+			            break
                 time+=1
-                #t.sleep(0.5)
+                #t.sleep(0)
                 #if(self.currentx<0 or self.currentx>39 or self.currenty<0 or self.currenty>99 or self.grid[self.currenty][self.currentx]==1 or (self.currentx==self.goalx and self.currenty==self.goaly) ):
                 #    print "Collided"
                 #    collide=1
                 if(self.currentx<0 or self.currentx>39 or self.currenty<0 or self.currenty>99 or self.car_animation.get_value(self.currentx,self.currenty)==1 or (self.currentx==self.goalx and self.currenty==self.goaly) ):
-                    print "Collided"
+                    #print "Collided"
                     collide=1
             #print "Final Cooedinates"
             #print self.currentx," ",self.currenty
@@ -141,6 +151,7 @@ class population(object):
 
         sorted_dictionary = sorted(dictionary.items(), key=operator.itemgetter(1))
         sorted_dictionary.reverse()
+        print sorted_dictionary
         #print sorted_dictionary
         self.best_fitness= sorted_dictionary[0][1]
         dict=[sorted_dictionary[i][0] for i in range(len(sorted_dictionary))]
@@ -333,17 +344,17 @@ class population(object):
 
         if(self.currentx!=self.goalx and self.currenty!=self.goaly):
             #fitness= math.sqrt(math.pow(self.goalx-self.currentx,2)+math.pow(self.goaly-self.currenty,2))
-            fitness= math.pow(self.goalx-self.currentx,2)+math.pow(self.goaly-self.currenty,2) - math.pow(self.goalx-self.startx,2)+math.pow(self.goaly-self.starty,2)
+            fitness= math.fabs(math.pow(self.goalx-self.currentx,2)+math.pow(self.goaly-self.currenty,2) - math.pow(self.goalx-self.startx,2)+math.pow(self.goaly-self.starty,2))
             print fitness
-            print "fail"
+            #print "fail"
         else :
-            print "Success"
+            #print "Success"
             self.success+=1
             fitness=100000
         if(collide==1):
             fitness-=1000
         fitness-=time
-        print fitness
+        #print fitness
         #fitness=1/fitness
         return fitness
         '''if(self.currentx!=self.goalx and self.currenty!=self.goaly):
