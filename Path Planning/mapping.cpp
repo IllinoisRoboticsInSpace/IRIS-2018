@@ -24,20 +24,20 @@ Vec2f _get_angle(float x, float y){
     return angles;
 }
 
-Vec3f _get_cartesian(int x, int y, float * cur_depth_frame){
+Vec3f _get_cartesian(int x, int y, cv::Mat cur_depth_frame){
     Vec3f ret_cartesian;
     //magic!
-    float distance = _raw_2_millimeter(cur_depth_frame[y][x]);
+    float distance = _raw_2_millimeter(cur_depth_frame.at<int>(x, y));
     //calculate phi and rho in spherical coord system
     Vec2f azmuthPolar(get_angle(x, y));
     //transform spherical system into cartesian system; assuming distance is approximately x
-    ret_cartesian.x = distance;;
+    ret_cartesian.x = distance;
     ret_cartesian.y = distance * math.tan(angle_x);
     ret_cartesian.z = distance * math.tan(-angle_y + math.pi / 2.0);
     return ret_cartesian;
 }
 
-void map::update_map(float * cur_depth_frame){
+void map::update_map(cv::Mat cur_depth_frame){
     for(int y = 0; y < height; y++){
         for(int x = 0; x < width; x++){
             Vec3f cur_pixel = _get_cartesian(x, y, cur_depth_frame);
