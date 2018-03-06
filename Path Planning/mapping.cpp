@@ -24,27 +24,29 @@ Vec2f _get_angle(float x, float y){
     return angles;
 }
 
-Vec3f _get_cartesian(int x, int y, cv::Mat cur_depth_frame){
-    Vec3f ret_cartesian;
-    //magic!
-    float distance = _raw_2_millimeter(cur_depth_frame.at<int>(x, y));
+Vec3f _get_cartesian(float distance, Vec2f azmuthPolar){
     //calculate phi and rho in spherical coord system
-    Vec2f azmuthPolar(get_angle(x, y));
     //transform spherical system into cartesian system; assuming distance is approximately x
-    ret_cartesian.x = distance;
-    ret_cartesian.y = distance * math.tan(angle_x);
-    ret_cartesian.z = distance * math.tan(-angle_y + math.pi / 2.0);
-    return ret_cartesian;
+    float x = distance * math.cos(azmuthPolar.x);
+    float y = distance * math.sin(azmuthPolar.x);
+    float z = distance * math.tan(-azmuthPolar.y + math.pi / 2.0);
+    return Vec3f(x, y, z);
 }
 
-void map::update_map(cv::Mat cur_depth_frame){
+map::map(){
+    //default constructor. Take constants from constant.h
+}
+
+void map::update_map(cv::Mat * cur_depth_frame){
     for(int y = 0; y < height; y++){
         for(int x = 0; x < width; x++){
-            Vec3f cur_pixel = _get_cartesian(x, y, cur_depth_frame);
-            Vec2f target_loc = calc_edge(cur_pixel);
+            Vec2f azmuthPolar(get_angle(x, y));
+            float distance = _raw_2_millimeter(cur_depth_frame->at<int>(x, y));
+            Vec3f cur_pixel = _get_cartesian(distance, azmuthPolar);
+            Vec2i target_loc = calc_edge(distance， azmuthPolar.x);
             //calc_edge gonna return two -1s if it's out of bound (e.g. pointing towards sky)
             if(target_loc.x != -1){
-                true_map[target_loc.y][target_loc.x] = cur_pixel.z;
+                true_map[target_loc.y][target_loc.x] = cur_pixel.z();
             }
         }
     }
@@ -52,6 +54,18 @@ void map::update_map(cv::Mat cur_depth_frame){
 
 float** map::return_entire_map(void){
     return true_map;
+}
+
+Vec2i map::calc_edge(float real_distance, float facing_direction_offset){
+    _update_my_pos();
+    //cart_coord.x is r; \theta is provided from localization
+    int x = math.cos(my_pos.theta_angle + facing_direction_offset) * real_distance; //x offset vector in millimeter
+    int y = math.sin(my_pos.theta_angle + facing_direction_offset) * real_distance;
+    return Vec2i(x, y);
+}
+
+void map::_update_my_pos(void){
+    secret_non_implemented_func_that_use_xbee_2_get_cur_pos();
 }
 
 float map::return_height_of_a_point(int x, int y){

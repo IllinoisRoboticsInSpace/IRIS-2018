@@ -1,5 +1,6 @@
 import numpy as np
 import math
+#(x, y, angle)
 
 dimX = 640
 dimY = 480

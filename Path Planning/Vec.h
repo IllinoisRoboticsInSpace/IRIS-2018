@@ -30,6 +30,7 @@ struct Vec2
 };
 /* define a useful float pt type */
 typedef Vec2<float> Vec2f;
+typedef Vec2<int> Vec2i;
 
 /* float 3-d class for vectorized operations. */
 class Vec3f{
