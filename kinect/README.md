@@ -1,6 +1,6 @@
 Instruction to use the code
 ```
-cd build
+mkdir build && cd build
 cmake ..
 make
 ./mapping_test
