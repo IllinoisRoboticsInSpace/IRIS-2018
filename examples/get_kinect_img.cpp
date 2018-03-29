@@ -1,5 +1,5 @@
 #include "libfreenect.hpp"
-#include "kinect.hpp"
+#include "kinectDevice.h"
 #include <iostream>
 #include <vector>
 #include <cmath>
@@ -9,7 +9,7 @@
 #include <highgui.h>
 
 using namespace cv;
-using namespace std; 
+using namespace std;
 
 
 /**KINECT parameters**/
@@ -38,16 +38,16 @@ int main(int argc, char **argv) {
 	Mat rgbMat(Size(640,480),CV_8UC3,Scalar(0));
 	Mat ownMat(Size(640,480),CV_8UC3,Scalar(0));
 	//Mat historic(-historicHalfSizeX, historicHalfSizeX, 0, historicSizeY);
-	
+
 	// The next two lines must be changed as Freenect::Freenect
 	// isn't a template but the method createDevice:
 	// Freenect::Freenect<MyFreenectDevice> freenect;
 	// MyFreenectDevice& device = freenect.createDevice(0);
 	// by these two lines:
-	
+
 	Freenect::Freenect freenect;
 	MyFreenectDevice& device = freenect.createDevice<MyFreenectDevice>(0);
-	
+
 	cvNamedWindow("rgb",CV_WINDOW_AUTOSIZE);
 	cvNamedWindow("depth",CV_WINDOW_AUTOSIZE);
 	device.startVideo();
@@ -74,9 +74,8 @@ int main(int argc, char **argv) {
 		if(iter >= 1000) break;
 		iter++;
 	}
-	
+
 	device.stopVideo();
 	device.stopDepth();
 	return 0;
 }
-

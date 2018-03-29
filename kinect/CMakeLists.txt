@@ -6,4 +6,4 @@ set(SOURCES kinectDevice.cpp)
 
 add_library(kinect ${SOURCES})
 
-target_link_libraries(kinect ${OpenCV_LIBS} ${FREENECT_LIBRARIES} pthread)
+target_link_libraries(kinect ${OpenCV_LIBS} ${libfreenect_LIBRARIES} pthread)

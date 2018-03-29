@@ -2,7 +2,7 @@
 #define MAPPING_H_
 
 #include <math.h>
-#include "Vec3f.h"
+#include "Vec.h"
 #include <opencv2/opencv.hpp>
 
 struct pos{

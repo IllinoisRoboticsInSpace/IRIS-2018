@@ -8,8 +8,8 @@ find_path(libfreenect_INCLUDE_DIRS NAMES libfreenect.hpp
 
 message("libfreenct_include_dirs:${libfreenect_INCLUDE_DIRS}")
 
-find_library(libfreenect_LIBRARIES NAMES libfreenect
-HINTS /usr/local/lib)
+find_library(libfreenect_LIBRARIES NAMES freenect
+    HINTS /usr/local/lib)
 
 message("libfreenect_lib_dirs:${libfreenect_LIBRARIES}")
 

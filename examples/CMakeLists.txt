@@ -3,4 +3,4 @@ project(examples)
 
 add_executable(get_kinect_img ${CMAKE_CURRENT_SOURCE_DIR}/get_kinect_img.cpp)
 
-target_link_libraries(get_kinect_img kinect)
+target_link_libraries(get_kinect_img kinect ${libfreenect_LIBRARIES} ${OpenCV_LIBS})
