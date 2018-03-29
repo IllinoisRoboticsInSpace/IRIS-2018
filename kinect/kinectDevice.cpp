@@ -1,4 +1,4 @@
-#include "kinect.hpp"
+#include "kinectDevice.h"
 #include "libfreenect.hpp"
 #include <iostream>
 #include <vector>
@@ -9,7 +9,7 @@
 #include <highgui.h>
 
 using namespace cv;
-using namespace std; 
+using namespace std;
 
 MyFreenectDevice::MyFreenectDevice(freenect_context *_ctx, int _index)
 	 		: Freenect::FreenectDevice(_ctx, _index), m_buffer_depth(FREENECT_DEPTH_11BIT),
@@ -17,14 +17,14 @@ MyFreenectDevice::MyFreenectDevice(freenect_context *_ctx, int _index)
 			m_new_depth_frame(false), depthMat(Size(640,480),CV_16UC1),
 			rgbMat(Size(640,480), CV_8UC3, Scalar(0)),
 			ownMat(Size(640,480),CV_8UC3,Scalar(0)) {
-			
+
 	for( unsigned int i = 0 ; i < 2048 ; i++) {
 		float v = i/2048.0;
 		v = std::pow(v, 3)* 6;
 		m_gamma[i] = v*6*256;
 	}
 }
-		
+
 		// Do not call directly even in child
 void MyFreenectDevice::VideoCallback(void* _rgb, uint32_t timestamp) {
 	std::cout << "RGB callback" << std::endl;
@@ -34,7 +34,7 @@ void MyFreenectDevice::VideoCallback(void* _rgb, uint32_t timestamp) {
 	m_new_rgb_frame = true;
 	m_rgb_mutex.unlock();
 };
-		
+
 		// Do not call directly even in child
 void MyFreenectDevice::DepthCallback(void* _depth, uint32_t timestamp) {
 	std::cout << "Depth callback" << std::endl;
@@ -44,7 +44,7 @@ void MyFreenectDevice::DepthCallback(void* _depth, uint32_t timestamp) {
 	m_new_depth_frame = true;
 	m_depth_mutex.unlock();
 }
-		
+
 bool MyFreenectDevice::getVideo(Mat& output) {
 	m_rgb_mutex.lock();
 	if(m_new_rgb_frame) {
@@ -57,7 +57,7 @@ bool MyFreenectDevice::getVideo(Mat& output) {
 		return false;
 	}
 }
-		
+
 bool MyFreenectDevice::getDepth(Mat& output) {
 	m_depth_mutex.lock();
 	if(m_new_depth_frame) {
@@ -70,4 +70,3 @@ bool MyFreenectDevice::getDepth(Mat& output) {
 		return false;
 	}
 }
-
