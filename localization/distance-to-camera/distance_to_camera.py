@@ -4,11 +4,14 @@
 # import the necessary packages
 import numpy as np
 import cv2
-
+import sys
+import getblue as GetB
 def find_marker(image):
 	# convert the image to grayscale, blur it, and detect edges
 	gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)	
-	gray = cv2.GaussianBlur(gray, (5, 5), 0)
+	#gray = cv2.GaussianBlur(gray, (5, 5), 0)
+	gray = cv2.medianBlur(image,31)	
+	#gray = cv2.bilateralFilter(image,9,75,75)
 	edged = cv2.Canny(gray, 35, 125)
 
 	# find the contours in the edged image and keep the largest one;
@@ -29,18 +32,22 @@ KNOWN_DISTANCE = 24.0
 
 # initialize the known object width, which in this case, the piece of
 # paper is 12 inches wide
-KNOWN_WIDTH = 11.0
+KNOWN_HEIGHT = 8.0
+
+focalLength = 928.170684814
+
+
 
 # initialize the list of images that we'll be using
-IMAGE_PATHS = ["images/2ft.png", "images/55in.png", "images/77in.png"]
+#IMAGE_PATHS = ["images/2ft.png", "images/55in.png", "images/77in.png"]
 
 # load the furst image that contains an object that is KNOWN TO BE 2 feet
 # from our camera, then find the paper marker in the image, and initialize
 # the focal length
 image = cv2.imread(IMAGE_PATHS[0])
 marker = find_marker(image)
-focalLength = (marker[1][0] * KNOWN_DISTANCE) / KNOWN_WIDTH
-
+focalLength = (marker[0][0] * KNOWN_DISTANCE) / KNOWN_HEIGHT
+print focalLength
 # loop over the images
 """for imagePath in IMAGE_PATHS:
 	# load the image, find the marker in the image, then compute the
@@ -59,15 +66,19 @@ focalLength = (marker[1][0] * KNOWN_DISTANCE) / KNOWN_WIDTH
 	cv2.waitKey(0)
 """
 
-cap = cv2.VideoCapture(1)
+#cap = cv2.VideoCapture(1)
 
 while(True):
-	ret, image = cap.read()
+	#ret, image = cap.read()
+	#if not ret:
+	#	print("Unable to get image from webcam. Exiting")
+	#	sys.exit(1)
+	image= GetB.returnFrame()
 	# load the image, find the marker in the image, then compute the
 	# distance to the marker from the camera
 	#image = cv2.imread(imagePath)
 	marker = find_marker(image)
-	inches = distance_to_camera(KNOWN_WIDTH, focalLength, marker[1][0])
+	inches = distance_to_camera(KNOWN_HEIGHT, focalLength, marker[0][0])
 
 	# draw a bounding box around the image and display it
 	box = np.int0(cv2.cv.BoxPoints(marker))
