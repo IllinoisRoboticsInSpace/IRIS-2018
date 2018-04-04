@@ -18,8 +18,8 @@ Vec3f _get_cartesian(float distance, Vec2f azmuthPolar);
 
 class map{
 public:
-    Map(); //default constructor
-    ~Map(); //deconstructor that cleans pointer it uses (technically we never need it)
+    map(void); //default constructor
+    ~map(); //deconstructor that cleans pointer it uses (technically we never need it)
     void update_map(cv::Mat * cur_depth_frame);
     float** return_entire_map(void);
     float return_height_of_a_point(int x, int y);

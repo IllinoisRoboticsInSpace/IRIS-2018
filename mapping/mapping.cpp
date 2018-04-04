@@ -34,14 +34,14 @@ Vec3f _get_cartesian(float distance, Vec2f azmuthPolar){
     return Vec3f(x, y, z);
 }
 
-map::map(){
+map::map(void){
     //default constructor. Take constants from constant.h
 }
 
 void map::update_map(cv::Mat * cur_depth_frame){
     for(int y = 0; y < height; y++){
         for(int x = 0; x < width; x++){
-            Vec2f azmuthPolar(get_angle(x, y));
+            Vec2f azmuthPolar(_get_angle(x, y));
             float distance = _raw_2_millimeter(cur_depth_frame->at<int>(x, y));
             Vec3f cur_pixel = _get_cartesian(distance, azmuthPolar);
             Vec2i target_loc = calc_edge(distance, azmuthPolar.x);
@@ -66,7 +66,11 @@ Vec2i map::calc_edge(float real_distance, float facing_direction_offset){
 }
 
 void map::_update_my_pos(void){
-    secret_non_implemented_func_that_use_object_detection_2_get_cur_pos();
+    pos new_pos;
+    new_pos.x = 0;
+    new_pos.y = 0;
+    new_pos.theta_angle = 0;
+    my_pos = new_pos;
 }
 
 float map::return_height_of_a_point(int x, int y){
