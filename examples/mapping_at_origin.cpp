@@ -9,7 +9,6 @@
 #include <highgui.h>
 #include "mapping.h"
 
-using namespace cv;
 using namespace std;
 
 template<class T>
@@ -28,10 +27,10 @@ int main(void){
     string filename("snapshot");
     string suffix(".png");
     int i_snap(0),iter(0);
-    Mat depthMat(Size(640,480), CV_8UC1);
-    Mat depthf (Size(640,480),CV_8UC1);
-    Mat rgbMat(Size(640,480),CV_8UC3,Scalar(0));
-    Mat ownMat(Size(640,480),CV_8UC3,Scalar(0));
+    cv::Mat depthMat(Size(640,480), CV_8UC1);
+    cv::Mat depthf (Size(640,480),CV_8UC1);
+    cv::Mat rgbMat(Size(640,480),CV_8UC3,Scalar(0));
+    cv::Mat ownMat(Size(640,480),CV_8UC3,Scalar(0));
     Freenect::Freenect freenect;
     MyFreenectDevice& device = freenect.createDevice<MyFreenectDevice>(0);
     /* end kinect initialization */
@@ -41,7 +40,7 @@ int main(void){
     while(!die){
         //device.getVideo(rgbMat);
         device.getDepth(depthMat);
-        depthMat.convertTo(depthf, CV_8UC1, 255.0/2048.0);
+        depthMat.convertTo(depthf, cv::CV_8UC1, 255.0/2048.0);
         map.update_map(&(depthf));
         vector<vector<float> > cur_map = map.return_entire_map();
         if(counter % 100 == 0){
