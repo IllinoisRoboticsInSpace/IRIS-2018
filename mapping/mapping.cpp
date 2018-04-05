@@ -36,7 +36,8 @@ Vec3f _get_cartesian(float distance, Vec2f azmuthPolar){
 
 iris_mapping::iris_mapping(void){
     for(size_t i = 0; i < 100; i++){
-        true_map.push_back(vector<float>);
+        vector<float> temp;
+        true_map.push_back(temp);
         for(int j = 0; j < 100; j++){
             true_map[i].push_back(0);
         }

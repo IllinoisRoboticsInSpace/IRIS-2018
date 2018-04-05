@@ -43,14 +43,13 @@ int main(void){
         depthMat.convertTo(depthf, cv::CV_8UC1, 255.0/2048.0);
         map.update_map(&(depthf));
         vector<vector<float> > cur_map = map.return_entire_map();
-        if(counter % 100 == 0){
+        if(iter % 100 == 0){
             print_2d_vector(cur_map);
         }
         if(iter >= 1000){
             //die!
             die = true;
         }
-        counter++;
         iter++;
     }
     return 0;
