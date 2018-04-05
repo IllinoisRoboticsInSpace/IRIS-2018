@@ -16,8 +16,8 @@ struct pos{
 
 /* static helper functions */
 float _raw_2_millimeter(float raw_depth);
-Vec2f _get_angle(float x, float y);
-Vec3f _get_cartesian(float distance, Vec2f azmuthPolar);
+cvec2f _get_angle(float x, float y);
+cvec3f _get_cartesian(float distance, cvec2f azmuthPolar);
 
 class iris_mapping{
 public:
@@ -26,7 +26,7 @@ public:
     void update_map(cv::Mat * cur_depth_frame);
     vector<vector<float> > return_entire_map(void);
     float return_height_of_a_point(int x, int y);
-    Vec2i calc_edge(float real_distance, float facing_direction_offset);
+    cvec2i calc_edge(float real_distance, float facing_direction_offset);
 private:
     //float[100][100] true_map;
     /* private member variables */
