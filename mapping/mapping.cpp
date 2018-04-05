@@ -34,7 +34,7 @@ Vec3f _get_cartesian(float distance, Vec2f azmuthPolar){
     return Vec3f(x, y, z);
 }
 
-map::map(void){
+iris_mapping::iris_mapping(void){
     for(size_t i = 0; i < 100; i++){
         true_map.push_back(vector<float>);
         for(int j = 0; j < 100; j++){
@@ -43,7 +43,7 @@ map::map(void){
     }
 }
 
-void map::update_map(cv::Mat * cur_depth_frame){
+void iris_mapping::update_map(cv::Mat * cur_depth_frame){
     for(int y = 0; y < height; y++){
         for(int x = 0; x < width; x++){
             Vec2f azmuthPolar(_get_angle(x, y));
@@ -58,11 +58,11 @@ void map::update_map(cv::Mat * cur_depth_frame){
     }
 }
 
-vector<vector<float> > map::return_entire_map(void){
+vector<vector<float> > iris_mapping::return_entire_map(void){
     return true_map;
 }
 
-Vec2i map::calc_edge(float real_distance, float facing_direction_offset){
+Vec2i iris_mapping::calc_edge(float real_distance, float facing_direction_offset){
     _update_my_pos();
     //cart_coord.x is r; \theta is provided from localization
     int x = cos(my_pos.theta_angle + facing_direction_offset) * real_distance; //x offset vector in millimeter
@@ -70,7 +70,7 @@ Vec2i map::calc_edge(float real_distance, float facing_direction_offset){
     return Vec2i(x, y);
 }
 
-void map::_update_my_pos(void){
+void iris_mapping::_update_my_pos(void){
     pos new_pos;
     new_pos.x = 0;
     new_pos.y = 0;
@@ -78,6 +78,6 @@ void map::_update_my_pos(void){
     my_pos = new_pos;
 }
 
-float map::return_height_of_a_point(int x, int y){
+float iris_mapping::return_height_of_a_point(int x, int y){
     return true_map[y][x];
 }

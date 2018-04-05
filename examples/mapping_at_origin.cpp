@@ -36,7 +36,7 @@ int main(void){
     MyFreenectDevice& device = freenect.createDevice<MyFreenectDevice>(0);
     /* end kinect initialization */
     /* start map instance initialization */
-    map my_mapping;
+    iris_mapping my_mapping;
     int counter = 0;
     while(!die){
         //device.getVideo(rgbMat);
