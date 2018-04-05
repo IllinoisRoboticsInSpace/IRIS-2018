@@ -113,6 +113,8 @@ int main(void){
         //depthMat.convertTo(depthf, CV_8UC1, 255.0/2048.0);
         my_mapping.update_map(&(depthMat));
         vector<vector<uchar> > cur_map = normalize_2d_vector(my_mapping.return_entire_map());
+        //TODO: to be fixed
+        /*
         //print_2d_vector(cur_map);
         cv::Mat grid(100, 100, CV_8UC1);
         for(int i = 0; i < 100; i++){
@@ -126,6 +128,7 @@ int main(void){
             cvDestroyWindow("gridplane");
             break;
         }
+        */
         if(iter >= 1000){
             //die!
             die = true;

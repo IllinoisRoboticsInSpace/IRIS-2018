@@ -77,6 +77,7 @@ vector<vector<float> > iris_mapping::return_entire_map(void){
     return true_map;
 }
 
+//TODO: may need to be fixed
 cvec2i iris_mapping::calc_edge(float real_distance, float facing_direction_offset){
     //cart_coord.x is r; \theta is provided from localization
     int edge_x = cos(my_pos.theta_angle + facing_direction_offset) * real_distance / 5.0; //x offset vector in millimeter
