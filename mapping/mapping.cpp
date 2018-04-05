@@ -20,7 +20,7 @@ float _raw_2_millimeter(float raw_depth){
 
 Vec2f _get_angle(float x, float y){
     Vec2f angles;
-    angles.x = ((half_dimX - x) / half_dimX) * half_fovX;
+    angles.x = ((half_dimX - x) / half_dimX) * half_fovX; //phi
     angles.y = pi2 - (((half_dimY - y) / half_dimY) * half_fovY);
     return angles;
 }
@@ -35,7 +35,12 @@ Vec3f _get_cartesian(float distance, Vec2f azmuthPolar){
 }
 
 map::map(void){
-    //default constructor. Take constants from constant.h
+    for(size_t i = 0; i < 100; i++){
+        true_map.push_back(vector<float>);
+        for(int j = 0; j < 100; j++){
+            true_map[i].push_back(0);
+        }
+    }
 }
 
 void map::update_map(cv::Mat * cur_depth_frame){
@@ -53,7 +58,7 @@ void map::update_map(cv::Mat * cur_depth_frame){
     }
 }
 
-float** map::return_entire_map(void){
+vector<vector<float> > map::return_entire_map(void){
     return true_map;
 }
 
