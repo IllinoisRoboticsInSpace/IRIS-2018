@@ -28,7 +28,7 @@ int main(void){
     string suffix(".png");
     int i_snap(0),iter(0);
     cv::Mat depthMat(Size(640,480), CV_8UC1);
-    cv::Mat depthf (Size(640,480),CV_8UC1);
+    cv::Mat depthf(Size(640,480),CV_8UC1);
     cv::Mat rgbMat(Size(640,480),CV_8UC3,Scalar(0));
     cv::Mat ownMat(Size(640,480),CV_8UC3,Scalar(0));
     Freenect::Freenect freenect;
@@ -40,7 +40,7 @@ int main(void){
     while(!die){
         //device.getVideo(rgbMat);
         device.getDepth(depthMat);
-        depthMat.convertTo(depthf, cv::CV_8UC1, 255.0/2048.0);
+        depthMat.convertTo(depthf, CV_8UC1, 255.0/2048.0);
         my_mapping.update_map(&(depthf));
         vector<vector<float> > cur_map = my_mapping.return_entire_map();
         if(iter % 100 == 0){

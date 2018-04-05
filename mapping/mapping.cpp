@@ -44,6 +44,10 @@ iris_mapping::iris_mapping(void){
     }
 }
 
+iris_mapping::~iris_mapping(){
+    //nothing
+}
+
 void iris_mapping::update_map(cv::Mat * cur_depth_frame){
     for(int y = 0; y < height; y++){
         for(int x = 0; x < width; x++){
