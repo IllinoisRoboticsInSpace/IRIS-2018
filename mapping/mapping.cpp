@@ -53,12 +53,13 @@ void iris_mapping::update_map(cv::Mat * cur_depth_frame){
     for(int y = 0; y < height; y++){
         for(int x = 0; x < width; x++){
             cvec2f azmuthPolar = _get_angle(x, y);
-            std::cout << "phi: " << azmuthPolar.x << std::endl;
-            std::cout << "rou: " << azmuthPolar.y << std::endl;
-            float distance = _raw_2_millimeter(cur_depth_frame->at<int>(x, y));
-            std::cout << "distance calced: " << distance << std::endl;
+            //std::cout << "phi: " << azmuthPolar.x << std::endl;
+            //std::cout << "rou: " << azmuthPolar.y << std::endl;
+            float debug_p = cur_depth_frame->at<float>(x, y);
+            float distance = _raw_2_millimeter(cur_depth_frame->at<float>(x, y));
+            //std::cout << "distance calced: " << distance << std::endl;
             cvec3f cur_pixel = _get_cartesian(distance, azmuthPolar);
-            std::cout << "calced cartesian: " << cur_pixel << std::endl;
+            //std::cout << "calced cartesian: " << cur_pixel << std::endl;
             cvec2i target_loc = calc_edge(distance, azmuthPolar.x);
             //calc_edge gonna return two -1s if it's out of bound (e.g. kinect is pointing towards sky)
             if(target_loc.x != -1){
@@ -76,7 +77,14 @@ cvec2i iris_mapping::calc_edge(float real_distance, float facing_direction_offse
     _update_my_pos();
     //cart_coord.x is r; \theta is provided from localization
     int x = cos(my_pos.theta_angle + facing_direction_offset) * real_distance; //x offset vector in millimeter
+    if(x < 0 || x >= 100){
+        //std::cout << "overflowed with x: " << x << std::endl;
+        return cvec2i(0, 0);
+    }
     int y = sin(my_pos.theta_angle + facing_direction_offset) * real_distance;
+    if(y < 0 || y >= 100){
+        return cvec2i(0, 0);
+    }
     return cvec2i(x, y);
 }
 
