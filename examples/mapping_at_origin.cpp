@@ -13,6 +13,7 @@ using namespace std;
 
 template<class T>
 void print_2d_vector(const vector<vector<T> > & some_vector){
+    std::cout << "===========================================" << std::endl;
     for(size_t row = 0; row < some_vector.size(); row++){
         for(size_t col = 0; col < some_vector[row].size(); col++){
             cout << some_vector[row][col] << " ";
@@ -51,6 +52,7 @@ int main(void){
             die = true;
         }
         iter++;
+        break;
     }
     return 0;
 }

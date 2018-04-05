@@ -1,5 +1,6 @@
 #include "mapping.h"
 #include <math.h>
+#include <iostream>
 
 int dimX = 640;
 int dimY = 480;
@@ -51,9 +52,13 @@ iris_mapping::~iris_mapping(){
 void iris_mapping::update_map(cv::Mat * cur_depth_frame){
     for(int y = 0; y < height; y++){
         for(int x = 0; x < width; x++){
-            cvec2f azmuthPolar(_get_angle(x, y));
+            cvec2f azmuthPolar = _get_angle(x, y);
+            std::cout << "phi: " << azmuthPolar.x << std::endl;
+            std::cout << "rou: " << azmuthPolar.y << std::endl;
             float distance = _raw_2_millimeter(cur_depth_frame->at<int>(x, y));
+            std::cout << "distance calced: " << distance << std::endl;
             cvec3f cur_pixel = _get_cartesian(distance, azmuthPolar);
+            std::cout << "calced cartesian: " << cur_pixel << std::endl;
             cvec2i target_loc = calc_edge(distance, azmuthPolar.x);
             //calc_edge gonna return two -1s if it's out of bound (e.g. pointing towards sky)
             if(target_loc.x != -1){
@@ -77,9 +82,9 @@ cvec2i iris_mapping::calc_edge(float real_distance, float facing_direction_offse
 
 void iris_mapping::_update_my_pos(void){
     pos new_pos;
-    new_pos.x = 0;
-    new_pos.y = 0;
-    new_pos.theta_angle = 0;
+    new_pos.x = 50;
+    new_pos.y = 50;
+    new_pos.theta_angle = 1;
     my_pos = new_pos;
 }
 
