@@ -41,8 +41,8 @@ int main(void){
         //device.getVideo(rgbMat);
         device.getDepth(depthMat);
         depthMat.convertTo(depthf, cv::CV_8UC1, 255.0/2048.0);
-        map.update_map(&(depthf));
-        vector<vector<float> > cur_map = map.return_entire_map();
+        my_mapping.update_map(&(depthf));
+        vector<vector<float> > cur_map = my_mapping.return_entire_map();
         if(iter % 100 == 0){
             print_2d_vector(cur_map);
         }
