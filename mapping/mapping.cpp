@@ -34,6 +34,7 @@ cvec3f _get_cartesian(float distance, cvec2f azmuthPolar){
 }
 
 iris_mapping::iris_mapping(void){
+    _update_my_pos();
     width = dimX;
     height = dimY;
     for(size_t i = 0; i < 100; i++){
@@ -50,6 +51,8 @@ iris_mapping::~iris_mapping(){
 }
 
 void iris_mapping::update_map(cv::Mat * cur_depth_frame){
+    std::cout << "updating" << std::endl;
+    _update_my_pos();
     for(int y = 0; y < height; y++){
         for(int x = 0; x < width; x++){
             cvec2f azmuthPolar = _get_angle(x, y);
@@ -67,6 +70,7 @@ void iris_mapping::update_map(cv::Mat * cur_depth_frame){
             }
         }
     }
+    std::cout << "updated" << std::endl;
 }
 
 vector<vector<float> > iris_mapping::return_entire_map(void){
@@ -74,18 +78,17 @@ vector<vector<float> > iris_mapping::return_entire_map(void){
 }
 
 cvec2i iris_mapping::calc_edge(float real_distance, float facing_direction_offset){
-    _update_my_pos();
     //cart_coord.x is r; \theta is provided from localization
-    int x = cos(my_pos.theta_angle + facing_direction_offset) * real_distance; //x offset vector in millimeter
-    if(x < 0 || x >= 100){
+    int edge_x = cos(my_pos.theta_angle + facing_direction_offset) * real_distance / 5.0; //x offset vector in millimeter
+    if(edge_x < 0 || edge_x >= 100){
         //std::cout << "overflowed with x: " << x << std::endl;
         return cvec2i(0, 0);
     }
-    int y = sin(my_pos.theta_angle + facing_direction_offset) * real_distance;
-    if(y < 0 || y >= 100){
+    int edge_y = sin(my_pos.theta_angle + facing_direction_offset) * real_distance / 5.0;
+    if(edge_y < 0 || edge_y >= 100){
         return cvec2i(0, 0);
     }
-    return cvec2i(x, y);
+    return cvec2i(edge_x, edge_y);
 }
 
 void iris_mapping::_update_my_pos(void){
