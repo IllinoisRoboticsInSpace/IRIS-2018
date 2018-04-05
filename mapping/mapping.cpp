@@ -2,8 +2,6 @@
 #include <math.h>
 #include <iostream>
 
-int dimX = 640;
-int dimY = 480;
 int half_dimX = dimX / 2;
 int half_dimY = dimY / 2;
 float degree_2_rad = M_PI / 180.0;
@@ -36,6 +34,8 @@ cvec3f _get_cartesian(float distance, cvec2f azmuthPolar){
 }
 
 iris_mapping::iris_mapping(void){
+    width = dimX;
+    height = dimY;
     for(size_t i = 0; i < 100; i++){
         vector<float> temp;
         true_map.push_back(temp);
@@ -60,7 +60,7 @@ void iris_mapping::update_map(cv::Mat * cur_depth_frame){
             cvec3f cur_pixel = _get_cartesian(distance, azmuthPolar);
             std::cout << "calced cartesian: " << cur_pixel << std::endl;
             cvec2i target_loc = calc_edge(distance, azmuthPolar.x);
-            //calc_edge gonna return two -1s if it's out of bound (e.g. pointing towards sky)
+            //calc_edge gonna return two -1s if it's out of bound (e.g. kinect is pointing towards sky)
             if(target_loc.x != -1){
                 true_map[target_loc.y][target_loc.x] = cur_pixel.z();
             }
