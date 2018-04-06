@@ -1,12 +1,17 @@
 import serial
 
 
-ser = serial.Serial('/dev/ttyACM0', 115200)
+ser = serial.Serial('/dev/tty.usbserial')
 
 print(ser.name)
 
-for x in range(0,127):
-	#temp = '!go/'+str(x) + '/0'
-	ser.write('!go/%d/0' % x)
+if(ser.isOpen()):
+	ser.write(b'!go/100/0!\n')
+	print('NIPPLE')
 
-ser.write('stop')
+#for x in range(0,127):
+	#temp = '!go/'+str(x) + '/0'
+	#ser.write('!go/%d/0!' % x)
+	
+
+#ser.write('stop')
