@@ -3,11 +3,11 @@
 Servo myservo;
 String command;
 int value;
-int pos = 0;
+int svalue = 0;
 
 void setup() {
   Serial.begin(115200);
-  Serial.setTimeout(50);//Parse speed of serial string input
+  //Serial.setTimeout(50);//Parse speed of serial string input
   Serial1.begin(9600);
   //Sets the mode of the motors to mode3 (check MD49 datasheet)
   Serial1.write(0);
