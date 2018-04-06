@@ -3,6 +3,10 @@
 
 #include "Vec.h"
 #include <opencv2/opencv.hpp>
+#include <vector>
+#include "constant.h"
+
+using namespace std;
 
 /* struct that represents current position of the robot */
 struct pos{
@@ -13,21 +17,21 @@ struct pos{
 
 /* static helper functions */
 float _raw_2_millimeter(float raw_depth);
-Vec2f _get_angle(float x, float y);
-Vec3f _get_cartesian(float distance, Vec2f azmuthPolar);
+cvec2f _get_angle(float x, float y);
+cvec3f _get_cartesian(float distance, cvec2f azmuthPolar);
 
-class map{
+class iris_mapping{
 public:
-    Map(); //default constructor
-    ~Map(); //deconstructor that cleans pointer it uses (technically we never need it)
+    iris_mapping(void); //default constructor
+    ~iris_mapping(); //deconstructor that cleans pointer it uses (technically we never need it)
     void update_map(cv::Mat * cur_depth_frame);
-    float** return_entire_map(void);
+    vector<vector<float> > return_entire_map(void);
     float return_height_of_a_point(int x, int y);
-    Vec2i calc_edge(float real_distance, float facing_direction_offset);
+    cvec2i calc_edge(float real_distance, float facing_direction_offset);
 private:
     //float[100][100] true_map;
     /* private member variables */
-    float ** true_map;
+    vector<vector<float> > true_map;
     int width;
     int height;
     pos my_pos;
