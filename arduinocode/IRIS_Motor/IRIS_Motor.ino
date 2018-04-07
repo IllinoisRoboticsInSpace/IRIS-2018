@@ -36,7 +36,7 @@ void loop() {
   //    }
   //    */
   //  }
-  
+
   while (Serial.available() > 0)
   {
     data = "";
@@ -53,11 +53,8 @@ void loop() {
     check = data.endsWith("#");
   }
 
-  if (!check) {
-    prevmillis = millis();
-    command = "stop";
-  }
-  else {
+
+  if (check) {
     Serial2.println(data.substring(0, data.length() - 1));
     int index = data.indexOf("/");
     int index2 = data.indexOf("/", index + 1);
