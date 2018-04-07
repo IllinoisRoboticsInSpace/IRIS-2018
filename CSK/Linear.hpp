@@ -164,8 +164,8 @@ struct Mat3
     T y1, y2, y3;
     T z1, z2, z3;
 };
-typedef Mat3<float> Mat3f;
-typedef Mat3<int> Mat3i;
+typedef Mat3<float> cmat3f;
+typedef Mat3<int> cmat3i;
 
 
 #endif // LINEAR_HPP

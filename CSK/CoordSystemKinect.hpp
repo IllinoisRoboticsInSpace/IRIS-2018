@@ -42,6 +42,6 @@ cvec3f GetCartCoord(int x, int y, float distance);
 cvec3f FindDown(int16_t accelerometer_x, int16_t accelerometer_y, int16_t accelerometer_z);
 
 /**Finds a matrix to multiply INPUT by so that this vector lies in the -Z axis**/
-Mat3f FindDownMatrix(const cvec2f& rVec,float Yaw);
+cmat3f FindDownMatrix(const cvec2f& rVec,float Yaw);
 }
 #endif // COORDSYSTEMKINECT_HPP

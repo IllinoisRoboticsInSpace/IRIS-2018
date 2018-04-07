@@ -55,7 +55,7 @@ cvec3f FindDown(int16_t accelerometer_x, int16_t accelerometer_y, int16_t accele
 
 
 /**Finds a matrix to multiply INPUT by so that this vector lies in the -Z axis**/
-Mat3f FindDownMatrix(const cvec3f& rVec, float Yaw)
+cmat3f FindDownMatrix(const cvec3f& rVec, float Yaw)
 {
     cvec3f a(rVec);//a is vector to rotate
     const cvec3f b(0,0,-1);//        b
@@ -64,17 +64,17 @@ Mat3f FindDownMatrix(const cvec3f& rVec, float Yaw)
 
     const cvec3f v = a.cross(b);//   v
     const float s = v.length();//   s
-    Mat3f vx;
+    cmat3f vx;
     vx.setSkewSymCrossProd(v);//    vx
-    const Mat3f vx2(vx*vx);//       vx2
+    const cmat3f vx2(vx*vx);//       vx2
 
-    Mat3f I;//                      I
+    cmat3f I;//                      I
     I.x1 = 1;
     I.y2 = 1;
     I.z3 = 1;
 
-    Mat3f gravity_rot = I+vx+(vx2*((1-c)/(s*s)));
-	Mat3f yaw_rot;
+    cmat3f gravity_rot = I+vx+(vx2*((1-c)/(s*s)));
+	cmat3f yaw_rot;
 	yaw_rot.x1 = cos(Yaw);
 	yaw_rot.x2 = sin(Yaw);
 	yaw_rot.y1 = -yaw_rot.x2;
