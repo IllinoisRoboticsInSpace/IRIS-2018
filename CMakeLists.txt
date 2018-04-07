@@ -17,6 +17,7 @@ include_directories("/usr/include/libusb-1.0/") #TODO: use module to handle path
 include_directories(${CMAKE_SOURCE_DIR}/kinect)
 include_directories(${CMAKE_SOURCE_DIR}/examples)
 include_directories(${CMAKE_SOURCE_DIR}/mapping)
+include_directories(${CMAKE_SOURCE_DIR}/CSK)
 #include_directories(${CMAKE_SOURCE_DIR}/path_planning) #not finished yet
 
 
@@ -24,6 +25,7 @@ if (DEBUG)
     add_definitions(-DDEBUG)
 endif()
 
+add_subdirectory(CSK)
 add_subdirectory(kinect)
 add_subdirectory(mapping)
 add_subdirectory(examples)

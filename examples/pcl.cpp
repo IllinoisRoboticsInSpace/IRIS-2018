@@ -7,7 +7,8 @@
 #include <opencv2/opencv.hpp>
 #include <cxcore.h>
 #include <highgui.h>
-#include "mapping.h"
+#include "kinect_pcl.h"
+#include "Linear.hpp"
 
 using namespace std;
 
@@ -91,6 +92,15 @@ void print_2d_vector(const vector<vector<T> > & some_vector){
     }
 }
 
+//template <class T>
+void print_vector_head(const vector<cvec3f> & some_vector){
+    std::cout << "============================================" << std::endl;
+    for(size_t i = 0; i < 10; i++){
+        std::cout << some_vector[i].x << " " << some_vector[i].y << " " << some_vector[i].z << std::endl;
+    }
+    std::cout << std::endl;
+}
+
 int main(void){
     /* start initialization; declera variables */
     bool die(false);
@@ -105,33 +115,15 @@ int main(void){
     MyFreenectDevice& device = freenect.createDevice<MyFreenectDevice>(0);
     /* end kinect initialization */
     /* start map instance initialization */
-    iris_mapping my_mapping;
+    //iris_mapping my_mapping;
     int counter = 0;
     while(!die){
         //device.getVideo(rgbMat);
         device.getDepth(depthMat);
         //depthMat.convertTo(depthf, CV_8UC1, 255.0/2048.0);
-        my_mapping.update_map(&(depthMat));
-        vector<vector<uchar> > cur_map = normalize_2d_vector(my_mapping.return_entire_map());
-        //TODO: to be fixed
-        //print_2d_vector(cur_map);
-        cv::Mat grid(100, 100, CV_8UC1);
-        for(int i = 0; i < 100; i++){
-            for(int j = 0; j < 100; j++){
-                grid.at<uchar>(i, j) = cur_map[i][j];
-            }
-        }
-        cv::imshow("gridplane", grid);
-        char k = cvWaitKey(5);
-        if( k == 27 ){
-            cvDestroyWindow("gridplane");
-            break;
-        }
-        if(iter >= 1000){
-            //die!
-            die = true;
-        }
-        iter++;
+        vector<cvec3f> cur_pcl = get_point_cloud(&(depthMat));
+        print_vector_head(cur_pcl);
+        break;
     }
     return 0;
 }
