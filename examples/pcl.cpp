@@ -92,11 +92,11 @@ void print_2d_vector(const vector<vector<T> > & some_vector){
     }
 }
 
-template <class T>
-void print_vector_head(const vector<T> & some_vector){
+//template <class T>
+void print_vector_head(const vector<cvec3f> & some_vector){
     std::cout << "============================================" << std::endl;
     for(size_t i = 0; i < 10; i++){
-        std::cout << some_vector[i] " ";
+        std::cout << some_vector[i].x << " " << some_vector[i].y << " " << some_vector[i].z << std::endl;
     }
     std::cout << std::endl;
 }
@@ -115,13 +115,13 @@ int main(void){
     MyFreenectDevice& device = freenect.createDevice<MyFreenectDevice>(0);
     /* end kinect initialization */
     /* start map instance initialization */
-    iris_mapping my_mapping;
+    //iris_mapping my_mapping;
     int counter = 0;
     while(!die){
         //device.getVideo(rgbMat);
         device.getDepth(depthMat);
         //depthMat.convertTo(depthf, CV_8UC1, 255.0/2048.0);
-        vector<cvec3f> cur_pcl = get_point_cloud(depthMat);
+        vector<cvec3f> cur_pcl = get_point_cloud(&(depthMat));
         print_vector_head(cur_pcl);
         break;
     }

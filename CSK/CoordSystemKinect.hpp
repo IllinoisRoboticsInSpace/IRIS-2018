@@ -36,10 +36,10 @@ int GetIndex(int x, int y);
 cvec2f GetAngle(int x, int y);
 
 /**get the cartesian style coordinates for some ray in the depth frame**/
-cvec2f GetCartCoord(int x, int y, float distance);
+cvec3f GetCartCoord(int x, int y, float distance);
 
 /**this gives a Vec that points down in coordinate system where forward is +X, left is +Y, up is +Z**/
-cvec2f FindDown(int16_t accelerometer_x, int16_t accelerometer_y, int16_t accelerometer_z);
+cvec3f FindDown(int16_t accelerometer_x, int16_t accelerometer_y, int16_t accelerometer_z);
 
 /**Finds a matrix to multiply INPUT by so that this vector lies in the -Z axis**/
 Mat3f FindDownMatrix(const cvec2f& rVec,float Yaw);
