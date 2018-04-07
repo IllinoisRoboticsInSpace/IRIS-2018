@@ -11,19 +11,6 @@ float fovY = 43 * degree_2_rad;
 float half_fovX = fovX / 2.0;
 float half_fovY = fovY / 2.0;
 
-float _raw_2_millimeter(float raw_depth){
-    float mystery1 = -0.0030711016; //copied from IRIS-2017; it said these magic num were obtained from the internet
-    float mystery2 = 3.3309495161;
-    return (1.0 / (raw_depth * mystery1 + mystery2)) * 1000;
-}
-
-cvec2f _get_angle(float x, float y){
-    cvec2f angles;
-    angles.x = ((half_dimX - x) / half_dimX) * half_fovX; //phi
-    angles.y = pi2 - (((half_dimY - y) / half_dimY) * half_fovY);
-    return angles;
-}
-
 cvec3f _get_cartesian(float distance, cvec2f azmuthPolar){
     //calculate phi and rho in spherical coord system
     //transform spherical system into cartesian system; assuming distance is approximately x
