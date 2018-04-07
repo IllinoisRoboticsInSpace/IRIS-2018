@@ -5,3 +5,5 @@ project(mapping)
 set(SOURCES kinect_pcl.cpp)
 
 add_library(mapping ${SOURCES})
+
+target_link_libraries(mapping CSK)

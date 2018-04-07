@@ -15,9 +15,9 @@ find_package(libfreenect REQUIRED)
 include_directories(${OpenCV_INLUCDE_DIRS})
 include_directories("/usr/include/libusb-1.0/") #TODO: use module to handle path finding
 include_directories(${CMAKE_SOURCE_DIR}/kinect)
+include_directories(${CMAKE_SOURCE_DIR}/CSK)
 include_directories(${CMAKE_SOURCE_DIR}/examples)
 include_directories(${CMAKE_SOURCE_DIR}/mapping)
-include_directories(${CMAKE_SOURCE_DIR}/CSK)
 #include_directories(${CMAKE_SOURCE_DIR}/path_planning) #not finished yet
 
 

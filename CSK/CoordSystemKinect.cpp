@@ -5,7 +5,7 @@
 /**written by: Leon Frickensmith leonfrickensmith@gmail.com**/
 
 /**converts the strange units to meters**/
-namespace csk
+namespace CSK
 {
 float RawDepthToMilli(int depthValue)
 {
