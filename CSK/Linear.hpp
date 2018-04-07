@@ -67,10 +67,11 @@ struct Vec3
     T z;
 };
 /**Defines some useful Vector types**/
-typedef Vec2<float> Vec2f;
-typedef Vec2<int> Vec2i;
-typedef Vec3<float> Vec3f;
-typedef Vec3<int> Vec3i;
+//c means customized
+typedef Vec2<float> cvec2f;
+typedef Vec2<int> cvec2i;
+typedef Vec3<float> cvec3f;
+typedef Vec3<int> cvec3i;
 
 
 /** 3x3 Matrix**/
