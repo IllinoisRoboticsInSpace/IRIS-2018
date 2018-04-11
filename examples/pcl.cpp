@@ -2,6 +2,7 @@
 #include "kinectDevice.h"
 #include <iostream>
 #include <vector>
+#include <cassert>
 #include <cmath>
 #include <pthread.h>
 #include <opencv2/opencv.hpp>
