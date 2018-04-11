@@ -12,7 +12,7 @@ std::vector<cvec3f> get_point_cloud(cv::Mat * cur_depth_frame){
                 //ret.push_back(cvec3f(0, 0, 0));
                 //if the data is not valid, drop it (or edit the code to put some sentinel values)
             } else {
-                ret.push_back(csk::GetCartCoord(col, row, distance));
+                ret.push_back(CSK::GetCartCoord(col, row, distance));
             }
         }
     }

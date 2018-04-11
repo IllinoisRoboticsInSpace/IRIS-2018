@@ -8,7 +8,7 @@
 #include "Linear.hpp"
 #include <stdint.h>//used for uint16_t
 
-namespace csk
+namespace CSK
 {
 
 /**EVERTHING IS IN RADIANS**/
