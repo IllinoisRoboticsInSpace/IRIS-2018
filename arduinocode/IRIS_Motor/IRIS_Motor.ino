@@ -9,7 +9,7 @@ int svalue = 0;
 
 void setup() {
   Serial.begin(9600);
-  //Serial.setTimeout(50);//Parse speed of serial string input
+  Serial.setTimeout(50);//Parse speed of serial string input
   Serial1.begin(9600);
   Serial2.begin(9600); //FOR DEBUG PURPOSES
   //Sets the mode of the motors to mode3 (check MD49 datasheet)
@@ -17,6 +17,8 @@ void setup() {
   Serial1.write(52);
   Serial1.write(3);
   myservo.attach(9);
+  delay(15);
+  myservo.write(0);
 }
 
 void loop() {
