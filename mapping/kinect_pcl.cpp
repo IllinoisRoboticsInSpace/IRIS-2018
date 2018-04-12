@@ -8,7 +8,7 @@ std::vector<cvec3f> get_point_cloud(cv::Mat * cur_depth_frame){
     for(int row = 0; row < cur_depth_frame->rows; row++){
         for(int col = 0; col < cur_depth_frame->cols; col++){
             //float distance = CSK::RawDepthToMilli(pixelPtr[CSK::GetIndex(col, row)]);
-            float distance = CSK::RawDepthToMilli(cur_depth_frame->at<uchar>(col, row));
+            float distance = CSK::RawDepthToMilli(cur_depth_frame->at<uint16_t>(col, row));
             if(distance > maxViewDist || distance < minViewDist){
                 //ret.push_back(cvec3f(0, 0, 0));
                 //if the data is not valid, drop it (or edit the code to put some sentinel values)
@@ -19,3 +19,4 @@ std::vector<cvec3f> get_point_cloud(cv::Mat * cur_depth_frame){
     }
     return ret;
 }
+
