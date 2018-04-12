@@ -31,12 +31,15 @@ int main(void){
     int counter = 0;
     while(!die){
         //device.getVideo(rgbMat);
+        /*
         device.getDepth(depthMat);
         device.getVideo(rgbMat);
         cv::imwrite("rgb_output.png", rgbMat);
         cv::imwrite("depth_output.png", depthMat);
+        */
+        uint16_t *dataptr = device.getDepthPointer();
         //depthMat.convertTo(depthf, CV_8UC1, 255.0/2048.0);
-        vector<cvec3f> cur_pcl = get_point_cloud(&(depthMat));
+        vector<cvec3f> cur_pcl = get_point_cloud(dataptr);
         for(size_t i = 0; i < cur_pcl.size(); i++){
             std::cout << cur_pcl[i].x << " ";
             std::cout << cur_pcl[i].y << " ";
