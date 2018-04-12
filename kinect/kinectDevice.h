@@ -41,7 +41,7 @@ class MyFreenectDevice : public Freenect::FreenectDevice {
 		bool getVideo(Mat& output);		
 		bool getDepth(Mat& output);		
 	private:
-		std::vector<uint8_t> m_buffer_depth;
+		std::vector<uint16_t> m_buffer_depth;
 		std::vector<uint8_t> m_buffer_rgb;
 		std::vector<uint16_t> m_gamma;
 		Mat depthMat;
