@@ -2,6 +2,11 @@
 # Author: Andres Rodriguez Reina
 # Mar 19 2017
 #
+#
+#
+# Modified: Dhruv Patel
+# Apr 12 2018
+#
 # USAGE:
 # Robust retry system for serial to TCP connection python script
 # The script retries to connect serial or TCP whenever connection is
@@ -227,7 +232,7 @@ if __name__ == '__main__':
     parser.add_argument("-p","--tcpport",help="tcp port to listen to",default=8000,type=int)
     parser.add_argument("-M","--maxon",help="maxon serial port configuration",action='store_true',default=True,dest='maxon')
     parser.add_argument("-m","--nomaxon",help="use standard serial port configuration",action='store_false',default=True,dest='maxon')
-    parser.add_argument("-e","--error",help="pattern to send through serial port on error",default="!stop/0/0!")
+    parser.add_argument("-e","--error",help="pattern to send through serial port on error",default="!G 1 0_!G 2 0_")
     parser.add_argument("-n","--ignore_error",help="do not send any pattern through serial port on error",action='store_true',default=False)
     args=parser.parse_args()
     #print args
@@ -241,7 +246,6 @@ if __name__ == '__main__':
     else:
         serial_connect.err_str=-2
     callback.serial=serial_connect(None)
-"""
     while True:
         try:
             start_tcp_server(callback,args.tcpport)
@@ -253,4 +257,3 @@ if __name__ == '__main__':
         time.sleep(1)  
         #notify callback no connections
         callback(-1)
-"""
