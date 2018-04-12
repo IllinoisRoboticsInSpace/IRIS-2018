@@ -44,7 +44,7 @@ class MyFreenectDevice : public Freenect::FreenectDevice {
 		std::vector<uint16_t> m_buffer_depth;
 		std::vector<uint8_t> m_buffer_rgb;
 		std::vector<uint16_t> m_gamma;
-		Mat<uint16_t> depthMat;
+		Mat depthMat;
 		Mat rgbMat;
 		Mat ownMat;
 		myMutex m_rgb_mutex;
