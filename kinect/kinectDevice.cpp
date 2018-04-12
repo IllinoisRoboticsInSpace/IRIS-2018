@@ -40,7 +40,7 @@ void MyFreenectDevice::DepthCallback(void* _depth, uint32_t timestamp) {
 	std::cout << "Depth callback" << std::endl;
 	m_depth_mutex.lock();
 	uint16_t* depth = static_cast<uint16_t*>(_depth);
-	depthMat.data = depth;
+	depthMat.data = (uchar*) depth;
 	m_new_depth_frame = true;
 	m_depth_mutex.unlock();
 }
