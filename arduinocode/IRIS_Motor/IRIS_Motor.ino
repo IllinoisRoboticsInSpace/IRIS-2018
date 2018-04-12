@@ -1,11 +1,8 @@
 #include <Servo.h>
 
 Servo myservo;
-String command;
 String data;
 unsigned prevmillis = 0;
-int value;
-int svalue = 0;
 
 void setup() {
   Serial.begin(9600);
@@ -15,7 +12,7 @@ void setup() {
   //Sets the mode of the motors to mode3 (check MD49 datasheet)
   Serial1.write(0);
   Serial1.write(52);
-  Serial1.write(3);
+  Serial1.write(1);
   myservo.attach(9);
   delay(15);
   myservo.write(0);
@@ -58,47 +55,32 @@ void loop() {
 
   if (check) {
     Serial2.println(data.substring(0, data.length() - 1));
-    int index = data.indexOf("/");
-    int index2 = data.indexOf("/", index + 1);
-    int index3 = data.indexOf("/", index2 + 1);
-    command = data.substring(0, index);
-    value = data.substring(index + 1, index2).toInt();
-    svalue = data.substring(index2 + 1).toInt() / 2;
-    myservo.write(svalue);
+    int index1 = data.indexOf("/");
+    int index2 = data.indexOf("/",index1+1);
+    int index3 = data.indexOf("/",index2+1);
+    int index4 = data.indexOf("/",index3+1);
+    int index5 = data.indexOf("/",index4+1);
+    int motor1 = data.substring(0, index1).toInt();
+    int motor2 = data.substring(index1+1, index2).toInt();
+    int actuator1 = data.substring(index2+1, index2).toInt();
+    int actuator2 = data.substring(index3+1, index3).toInt();
+    int actuator3 = data.substring(index4+1, index5).toInt();
+    int servo = data.substring(index5+1).toInt()/2;
+    Serial.print(data);
+    Serial.print(motor1);
+    Serial.print(motor2);
+    Serial1.write(0);
+    Serial1.write(49);
+    Serial1.write(motor1);
+    Serial1.write(0);
+    Serial1.write(50);
+    Serial1.write(motor2);
+    myservo.write(servo);
     //Serial2.println( "Command: " + command + "Value: " + value + "Svalue: " + svalue); //FOR DEBUG PURPOSES: WRITES VALUE READ TO SERIAL 2
     //Serial2.println(data); //FOR DEBUG PURPOSES: WRITES VALUE READ TO SERIAL 2
     //Serial2.println(data); //FOR DEBUG PURPOSES: WRITES VALUE READ TO SERIAL 2
     //speed = value (127 = max forward, -128 = max backwards)
     ///Serial.print(command);
-    if (command == "go") {
-      //Serial2.println(command);
-      Serial1.write(0);
-      Serial1.write(49);
-      Serial1.write(value);
-      Serial1.write(0);
-      Serial1.write(50);
-      Serial1.write(0);
-    }
-    //stops speed and turn
-    if (command == "stop") {
-      //Serial2.println(command);
-      Serial1.write(0);
-      Serial1.write(49);
-      Serial1.write(0);
-      Serial1.write(0);
-      Serial1.write(50);
-      Serial1.write(0);
-    }
-    /*speed = speed + value for motor1
-      speed = speed - value for motor2
-      positve value = turn right, vice versa (-128 to 127)
-    */
-    if (command == "turn") {
-      //Serial2.println(command);
-      Serial1.write(0);
-      Serial1.write(50);
-      Serial1.write(value);
-    }
   }
   //Serial2.println(command);
 
