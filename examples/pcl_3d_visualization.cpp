@@ -121,6 +121,9 @@ int main(void){
     while(!die){
         //device.getVideo(rgbMat);
         device.getDepth(depthMat);
+        device.getVideo(rgbMat);
+        cv::imwrite("rgb_output.png", rgbMat);
+        cv::imwrite("depth_output.png", depthMat);
         //depthMat.convertTo(depthf, CV_8UC1, 255.0/2048.0);
         vector<cvec3f> cur_pcl = get_point_cloud(&(depthMat));
         for(size_t i = 0; i < cur_pcl.size(); i++){
