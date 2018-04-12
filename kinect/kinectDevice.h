@@ -40,17 +40,20 @@ class MyFreenectDevice : public Freenect::FreenectDevice {
 		void DepthCallback(void* _depth, uint32_t timestamp);		
 		bool getVideo(Mat& output);		
 		bool getDepth(Mat& output);		
+		uint16_t* getDepthPointer();
 	private:
 		std::vector<uint16_t> m_buffer_depth;
 		std::vector<uint8_t> m_buffer_rgb;
 		std::vector<uint16_t> m_gamma;
+		uint16_t* depth_raw;
+		bool m_new_rgb_frame;
+		bool m_new_depth_frame;
 		Mat depthMat;
 		Mat rgbMat;
 		Mat ownMat;
 		myMutex m_rgb_mutex;
 		myMutex m_depth_mutex;
-		bool m_new_rgb_frame;
-		bool m_new_depth_frame;
+
 };
 
 #endif

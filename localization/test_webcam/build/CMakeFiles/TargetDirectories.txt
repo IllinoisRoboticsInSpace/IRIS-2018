@@ -1,3 +1,0 @@
-/home/iris/IRIS-2018/localization/test_webcam/build/CMakeFiles/edit_cache.dir
-/home/iris/IRIS-2018/localization/test_webcam/build/CMakeFiles/rebuild_cache.dir
-/home/iris/IRIS-2018/localization/test_webcam/build/CMakeFiles/checkboard_navigation.dir
