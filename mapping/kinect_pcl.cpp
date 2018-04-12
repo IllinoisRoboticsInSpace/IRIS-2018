@@ -20,3 +20,21 @@ std::vector<cvec3f> get_point_cloud(cv::Mat * cur_depth_frame){
     return ret;
 }
 
+std::vector<cvec3f> get_point_cloud(const uint16_t cur_depth_frame){
+    //uint8_t* pixelPtr = (uint8_t*)cur_depth_frame->data;
+    int point_count = dimX * dimY;
+    std::vector<cvec3f> ret;
+    for(int row = 0; row < dimY; row++){
+        for(int col = 0; col < dimX; col++){
+            //float distance = CSK::RawDepthToMilli(pixelPtr[CSK::GetIndex(col, row)]);
+            float distance = CSK::RawDepthToMilli(cur_depth_frame[CSK::GetIndex(col, row)]);
+            if(distance > maxViewDist || distance < minViewDist){
+                //ret.push_back(cvec3f(0, 0, 0));
+                //if the data is not valid, drop it (or edit the code to put some sentinel values)
+            } else {
+                ret.push_back(CSK::GetCartCoord(col, row, distance));
+            }
+        }
+    }
+    return ret;
+}

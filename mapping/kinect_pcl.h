@@ -13,5 +13,6 @@
 #define minViewDist 470
 
 std::vector<cvec3f> get_point_cloud(cv::Mat * cur_depth_frame);
+std::vector<cvec3f> get_point_cloud(const uint16_t cur_depth_frame);
 
 #endif
