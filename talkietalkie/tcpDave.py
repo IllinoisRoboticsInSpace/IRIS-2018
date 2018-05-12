@@ -3,7 +3,7 @@ import socket
 import threading
 import json
 
-bind_ip = '130.126.68.54'
+bind_ip = '192.168.7.105'
 bind_port = 9999
 
 server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
