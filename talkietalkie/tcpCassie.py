@@ -31,7 +31,7 @@ def send_messages():
 
 # connect the client
 # client.connect((target, port))
-client.connect(('130.126.68.54', 9999))
+client.connect(('192.168.7.105', 9999))
 print ('Connected!')
 
 server_handler = threading.Thread(
