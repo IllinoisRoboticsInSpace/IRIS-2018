@@ -1,0 +1,8 @@
+cmake_minimum_required(VERSION 2.8)
+project( fullTest )
+find_package( OpenCV REQUIRED )
+find_package (Threads)
+add_executable( fullTest ../src/communication.cpp ../src/checkboard_navigation_module.cpp ../src/CoordSystemKinect.cpp ../src/debug_ip_server.cpp ../src/kinect_obstacle_module.cpp ../src/main.cpp ../src/path_planning_module.cpp )
+include_directories( /usr/include/ ../src/ )
+target_link_libraries (fullTest ${OpenCV_LIBS} ${CMAKE_THREAD_LIBS_INIT} -lfreenect -lz -lserial)
+SET( CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -std=c++0x" )
