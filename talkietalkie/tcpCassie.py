@@ -10,7 +10,7 @@ target = '{}.{}.{}'.format(hostname, sld, tld)
 
 # create an ipv4 (AF_INET) socket object using the tcp protocol (SOCK_STREAM)
 client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-map=[][]
+map=[]
 
 
 def initialize(mapDave):

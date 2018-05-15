@@ -11,7 +11,7 @@ server.bind((bind_ip, bind_port))
 server.listen(5)  # max backlog of connections
 
 print ('Listening on {}:{}'.format(bind_ip, bind_port))
-map=[][]
+map=[]
 
 def initialize(mapCassie):
 	map= mapCassie
