@@ -52,6 +52,9 @@ int main(int argc, char** argv)
           //event.number,
           //event.value == 0 ? "up" : "down");
         //A=0;B=1;X=2;Y=3;
+      printf("Button %u is %s\n",
+        event.number,
+        event.value == 0 ? "up" : "down");
         if(event.number==5)
           uncapped=event.value!=0?1:0;
         if(event.number==0)//A
@@ -70,6 +73,7 @@ int main(int argc, char** argv)
       else if (event.isAxis())
       {
         //printf("Axis %u is at position %d\n", event.number, event.value);
+        printf("Axis %u is at position %d\n", event.number, event.value);
         int abb = (event.value>0?1:-1)*max(0,(event.value>0?event.value:-event.value)-100*64);
 		if(event.number==1)
 			last_left=max(-1000.,min(1000.,-abb/(uncapped?25:50)));
