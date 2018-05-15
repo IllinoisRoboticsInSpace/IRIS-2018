@@ -9,6 +9,7 @@
 #include <netdb.h>
 #include <arpa/inet.h>
 #include <sys/wait.h>
+#include <sstream>
 #include <signal.h>
 
 #define PORT "3490"  // the port users will be connecting to
@@ -101,7 +102,7 @@ int main(void)
     }
 
     printf("server: waiting for connections...\n");
-
+    int map[6][6]= {1};
     while(1) {  // main accept() loop
         sin_size = sizeof their_addr;
         new_fd = accept(sockfd, (struct sockaddr *)&their_addr, &sin_size);
@@ -118,34 +119,20 @@ int main(void)
         if (!fork()) { // this is the child process
             close(sockfd); // child doesn't need the listener
 
+						int height = 100;
+						int width = 100;
 
-						std::string map_json="";
-						map_json="{\"data\":[";
-                for(int px=-historicHalfSizeX; px<historicHalfSizeX; px++)
-                {
-                    if(px!=-historicHalfSizeX) map_json+=",";
-                    map_json+="[";
-                    for(int py=0; py<historicSizeY; py++)
-                    {
-                        if(py!=0) map_json+=",";
-                        int val=historic( px,py );
-                        map_json+=std::to_string(val==map_defaultValue?9:val);
-                    }
-                    map_json+="]";
-                }
-                map_json+="],\"position\":["+std::to_string((int)xPos)+".0,"+std::to_string((int)yPos)+".0,"+std::to_string(robot_pos.t)+"]
-
-
-
-
-
-
-
-
-
-
-
-
+						for(;height<100; height++)
+						{
+							for(;width<100; width++)
+							{
+                                      
+               const void* string =  (std::to_string(map[height][width])).c_str();
+                 
+								if (send(new_fd,string, 13, 0) == -1)
+										perror("send");
+							}
+						}
 
             if (send(new_fd, "Hello, world!", 13, 0) == -1)
                 perror("send");
