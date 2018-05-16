@@ -7,7 +7,7 @@
 #include <sys/types.h>
 #include <netinet/in.h>
 #include <sys/socket.h>
-
+#include <iostream>
 #include <arpa/inet.h>
 
 #define PORT "3490" // the port client will be connecting to
@@ -28,6 +28,7 @@ int main(int argc, char *argv[])
 {
     int sockfd, numbytes;
     char buf[MAXDATASIZE];
+    char *number;
     struct addrinfo hints, *servinfo, *p;
     int rv;
     char s[INET6_ADDRSTRLEN];
@@ -73,8 +74,32 @@ int main(int argc, char *argv[])
     printf("client: connecting to %s\n", s);
 
     freeaddrinfo(servinfo); // all done with this structure
-
-    if ((numbytes = recv(sockfd, buf, MAXDATASIZE-1, 0)) == -1) {
+     int map[3][4];
+    int height = 0;
+    int width = 0;
+				for(;height<3; height++)
+        {
+							for(;width<4; width++)
+							{
+               if ((numbytes = recv(sockfd, number, MAXDATASIZE-1, 0)) == -1) {
+                  perror("recv");
+                  exit(1);
+                    }
+                  map[height][width] = (int)(*number);          
+                                    
+               }
+       }
+    height = 0;
+    width = 0;
+    for(;height<3; height++)
+       {
+						for(;width<4; width++)
+							{
+                  std::cout<< map[height][width];
+             }
+        }
+                
+    /*if ((numbytes = recv(sockfd, buf, MAXDATASIZE-1, 0)) == -1) {
         perror("recv");
         exit(1);
     }
@@ -82,7 +107,7 @@ int main(int argc, char *argv[])
     buf[numbytes] = '\0';
 
     printf("client: received '%s'\n",buf);
-
+    */
     close(sockfd);
 
     return 0;
