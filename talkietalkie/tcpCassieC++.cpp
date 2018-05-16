@@ -32,12 +32,13 @@ int main(int argc, char *argv[])
     struct addrinfo hints, *servinfo, *p;
     int rv;
     char s[INET6_ADDRSTRLEN];
-
+    std::cout<< "1";
+    
     if (argc != 2) {
         fprintf(stderr,"usage: client hostname\n");
         exit(1);
     }
-
+    
     memset(&hints, 0, sizeof hints);
     hints.ai_family = AF_UNSPEC;
     hints.ai_socktype = SOCK_STREAM;
@@ -46,7 +47,7 @@ int main(int argc, char *argv[])
         fprintf(stderr, "getaddrinfo: %s\n", gai_strerror(rv));
         return 1;
     }
-
+    std::cout<< "2";
     // loop through all the results and connect to the first we can
     for(p = servinfo; p != NULL; p = p->ai_next) {
         if ((sockfd = socket(p->ai_family, p->ai_socktype,
@@ -81,11 +82,21 @@ int main(int argc, char *argv[])
         {
 							for(;width<4; width++)
 							{
-               if ((numbytes = recv(sockfd, number, MAXDATASIZE-1, 0)) == -1) {
-                  perror("recv");
+               /*char c;
+               if ((numbytes = recv(sockfd, number, sizeof(c), 0)) == -1) {
+                  /*perror("recv");
                   exit(1);
                     }
-                  map[height][width] = (int)(*number);          
+                    //std::cout<<*number;
+                  */
+                  if ((numbytes = recv(sockfd, buf, MAXDATASIZE-1, 0)) == -1) {
+                            perror("recv");
+                            exit(1);
+                    }
+                    buf[numbytes] = '\0';
+
+                  printf("client: received '%s'\n",buf);
+                  //map[height][width] = (int)(*number);          
                                     
                }
        }
