@@ -111,11 +111,9 @@ public:
 				if (current != m(i, k)) { //There is a descrepancy between the two maps
 					if (current == map_occupied || m(i, k) == map_occupied) { //A new obstacle appeared
 						this->(i, k) = map_occupied;
-						m(i, k) = map_occupied;
 					}
 					else if (current == map_unoccupied || m(i, k) == map_unoccupied) { //No new obstacle...
 						this->(i, k) = map_unoccupied; // ...but there is a new unoccupied area
-						m(i, k) = map_unoccupied;
 					}
 				}
 			}
