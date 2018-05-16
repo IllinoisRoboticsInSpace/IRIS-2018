@@ -1,9 +1,21 @@
 #include <Servo.h>
-
+#include "pwm_actuator.h"
+#define SPEED 8
+#define DIR 49
+#define BRAKE 51
+#define SPEED1 7
+#define DIR1 48
+#define BRAKE1 50
+#define SPEED2 6
+#define DIR2 44
+#define BRAKE2 46
+int actuatortest = 10;
 Servo myservo;
 String data;
 unsigned prevmillis = 0;
-
+pwm_actuator actuator = pwm_actuator();
+pwm_actuator actuatorl = pwm_actuator();
+pwm_actuator actuatorr = pwm_actuator();
 void setup() {
   Serial.begin(9600);
   Serial.setTimeout(50);//Parse speed of serial string input
@@ -16,6 +28,26 @@ void setup() {
   myservo.attach(9);
   delay(15);
   myservo.write(0);
+  pinMode(actuatortest, OUTPUT);
+
+  actuator.init(
+        SPEED, DIR, BRAKE, //pins
+        194, // extend_speed (forward)
+        194, // retract_speedint (backwards)
+        0 //brake_negate (enable negate)
+  );
+  actuatorl.init(
+        SPEED1, DIR1, BRAKE1, //pins
+        194, // extend_speed (forward)
+        194, // retract_speedint (backwards)
+        0 //brake_negate (enable negate)
+  );
+  actuatorr.init(
+        SPEED2, DIR2, BRAKE2, //pins
+        194, // extend_speed (forward)
+        194, // retract_speedint (backwards)
+        0 //brake_negate (enable negate)
+  );
 }
 
 void loop() {
@@ -60,10 +92,10 @@ void loop() {
     int index3 = data.indexOf("/",index2+1);
     int index4 = data.indexOf("/",index3+1);
     int index5 = data.indexOf("/",index4+1);
-    int motor1 = data.substring(0, index1).toInt();
-    int motor2 = data.substring(index1+1, index2).toInt();
-    int actuator1 = data.substring(index2+1, index2).toInt();
-    int actuator2 = data.substring(index3+1, index3).toInt();
+    int motor1 = data.substring(0, index1).toInt()/12;
+    int motor2 = -data.substring(index1+1, index2).toInt()/12;
+    int actuator1 = data.substring(index2+1, index3).toInt();
+    int actuator2 = data.substring(index3+1, index4).toInt();
     int actuator3 = data.substring(index4+1, index5).toInt();
     int servo = data.substring(index5+1).toInt()/2;
     Serial.print(data);
@@ -76,6 +108,74 @@ void loop() {
     Serial1.write(50);
     Serial1.write(motor2);
     myservo.write(servo);
+    Serial.println(actuator1);
+    Serial.println(actuator2);
+    Serial.println(actuator3);
+    if (actuator1 == 0)
+    {
+      actuator.retract();
+    }
+    else if (actuator1 == 1)
+    {
+      actuator.stop();
+    }
+    else if (actuator1 == 2)
+    {
+      actuator.extend();
+    }
+    else{
+      analogWrite(SPEED, 0);          //Stop actuator
+      digitalWrite(BRAKE, HIGH != 0);
+    }
+    if (actuator2 == 0)
+    {
+      actuatorl.retract();
+    }
+    else if (actuator2 == 1)
+    {
+      actuatorl.stop();
+    }
+    else if (actuator2 == 2)
+    {
+      actuatorl.extend();
+    }
+    else{
+      analogWrite(SPEED1, 0);          //Stop actuator
+      digitalWrite(BRAKE1, HIGH != 0);
+    }
+    if (actuator3 == 0)
+    {
+      actuatorr.retract();
+    }
+    else if (actuator3 == 1)
+    {
+      actuatorr.stop();
+    }
+    else if (actuator3 == 2)
+    {
+      actuatorr.extend();
+    }
+    else{
+      analogWrite(SPEED2, 0);          //Stop actuator
+      digitalWrite(BRAKE2, HIGH != 0);
+    }
+/*
+    if (actuator2 == 0)
+    {
+      analogWrite(actuatortest, 127);
+    }
+    else if (actuator2 == 1)
+    {
+      analogWrite(actuatortest, 0);
+    }
+    else if (actuator2 == 2)
+    {
+      analogWrite(actuatortest, 255);
+    }
+    else{
+      analogWrite(actuatortest, 127);
+    }
+*/
     //Serial2.println( "Command: " + command + "Value: " + value + "Svalue: " + svalue); //FOR DEBUG PURPOSES: WRITES VALUE READ TO SERIAL 2
     //Serial2.println(data); //FOR DEBUG PURPOSES: WRITES VALUE READ TO SERIAL 2
     //Serial2.println(data); //FOR DEBUG PURPOSES: WRITES VALUE READ TO SERIAL 2
