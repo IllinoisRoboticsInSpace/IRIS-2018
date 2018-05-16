@@ -27,12 +27,12 @@ void *get_in_addr(struct sockaddr *sa)
 int main(int argc, char *argv[])
 {
     int sockfd, numbytes;
-    char buf[MAXDATASIZE];
+    
     char *number;
     struct addrinfo hints, *servinfo, *p;
     int rv;
     char s[INET6_ADDRSTRLEN];
-    std::cout<< "1";
+   // std::cout<< "1";
     
     if (argc != 2) {
         fprintf(stderr,"usage: client hostname\n");
@@ -47,7 +47,7 @@ int main(int argc, char *argv[])
         fprintf(stderr, "getaddrinfo: %s\n", gai_strerror(rv));
         return 1;
     }
-    std::cout<< "2";
+    //std::cout<< "2";
     // loop through all the results and connect to the first we can
     for(p = servinfo; p != NULL; p = p->ai_next) {
         if ((sockfd = socket(p->ai_family, p->ai_socktype,
@@ -76,49 +76,34 @@ int main(int argc, char *argv[])
 
     freeaddrinfo(servinfo); // all done with this structure
      int map[3][4];
-    int height = 0;
-    int width = 0;
-				for(;height<3; height++)
-        {
-							for(;width<4; width++)
-							{
-               /*char c;
-               if ((numbytes = recv(sockfd, number, sizeof(c), 0)) == -1) {
-                  /*perror("recv");
-                  exit(1);
-                    }
-                    //std::cout<<*number;
-                  */
+  
+  char buf[MAXDATASIZE];
                   if ((numbytes = recv(sockfd, buf, MAXDATASIZE-1, 0)) == -1) {
                             perror("recv");
                             exit(1);
                     }
-                    buf[numbytes] = '\0';
-
-                  printf("client: received '%s'\n",buf);
-                  //map[height][width] = (int)(*number);          
-                                    
-               }
-       }
-    height = 0;
+                    buf[12] = '\0';
+    //std::cout<<buf;
+    int height = 0;
+    int width = 0;
+    for(;height<3; height++)
+       {
+						for(width=0;width<4; width++)
+							{
+                  map[height][width]= buf[height*4 + width]-48;
+             }
+        }
+  /*  height = 0;
     width = 0;
     for(;height<3; height++)
        {
-						for(;width<4; width++)
+						for(width=0;width<4; width++)
 							{
-                  std::cout<< map[height][width];
+                  std::cout<< map[height][width]<<" \n";
              }
         }
-                
-    /*if ((numbytes = recv(sockfd, buf, MAXDATASIZE-1, 0)) == -1) {
-        perror("recv");
-        exit(1);
-    }
-
-    buf[numbytes] = '\0';
-
-    printf("client: received '%s'\n",buf);
-    */
+*/                
+ 
     close(sockfd);
 
     return 0;
