@@ -105,7 +105,7 @@ int main(void)
     int map[3][4] = {  
    {0, 1, 2, 3} ,   
    {4, 5, 6, 7} ,   
-   {8, 9, 10, 11}   
+   {8, 9, 1, 2}   
 };
     
     while(1) {  // main accept() loop
@@ -121,30 +121,31 @@ int main(void)
             s, sizeof s);
         printf("server: got connection from %s\n", s);
 
-        int height = 0;
+
+          char buf[100];
+          int height = 0;
 						int width = 0;
 
-						for(;height<3; height++)
+						for(height=0;height<3; height++)
 						{
-							for(;width<4; width++)
+							for(width=0;width<4; width++)
 							{
                     
-                     //std::ostringstream ss;
-                     //int number = map[height][width];
-                     //ss << number;
+                    
+       
                      char *c  ;
                      char a= (char)(map[height][width] + 48);
-                     c= &a; 
-                                       
-               //const void* string =  (std::to_string(map[height][width])).c_str();
-                 std::cout<<"sending";
-								if (send(new_fd,c, sizeof(c), 0) == -1)
-										perror("send");
+                     buf[height*4 + width]=a;
+                     //std::cout<<c;                 
+                 //std::cout<<"sending";
+							
 							}
 						}
 
-            /*if (send(new_fd, "Hello, world!", 13, 0) == -1)
-                perror("send");*/
+                buf[12]= '\0';
+            	if (send(new_fd,buf, sizeof(buf), 0) == -1)
+										perror("send");
+            //std::cout<<buf;
             close(new_fd);
             exit(0);
         
