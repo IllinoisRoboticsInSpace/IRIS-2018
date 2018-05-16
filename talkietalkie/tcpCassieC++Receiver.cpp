@@ -10,6 +10,7 @@
 #include <iostream>
 #include <arpa/inet.h>
 
+#include <algorithms/src/kinect_obstacle_module.cpp>
 #define PORT "3490" // the port client will be connecting to
 
 #define MAXDATASIZE 100 // max number of bytes we can get at once
