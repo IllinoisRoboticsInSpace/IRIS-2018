@@ -11,7 +11,7 @@
 #include <sys/wait.h>
 #include <sstream>
 #include <signal.h>
-
+#include <iostream>
 #define PORT "3490"  // the port users will be connecting to
 
 #define BACKLOG 10     // how many pending connections queue will hold
@@ -102,7 +102,12 @@ int main(void)
     }
 
     printf("server: waiting for connections...\n");
-    int map[6][6]= {1};
+    int map[3][4] = {  
+   {0, 1, 2, 3} ,   
+   {4, 5, 6, 7} ,   
+   {8, 9, 10, 11}   
+};
+    
     while(1) {  // main accept() loop
         sin_size = sizeof their_addr;
         new_fd = accept(sockfd, (struct sockaddr *)&their_addr, &sin_size);
@@ -116,28 +121,37 @@ int main(void)
             s, sizeof s);
         printf("server: got connection from %s\n", s);
 
-        if (!fork()) { // this is the child process
-            close(sockfd); // child doesn't need the listener
+        int height = 0;
+						int width = 0;
 
-						int height = 100;
-						int width = 100;
-
-						for(;height<100; height++)
+						for(;height<3; height++)
 						{
-							for(;width<100; width++)
+							for(;width<4; width++)
 							{
-                                      
-               const void* string =  (std::to_string(map[height][width])).c_str();
-                 
-								if (send(new_fd,string, 13, 0) == -1)
+                    
+                     //std::ostringstream ss;
+                     //int number = map[height][width];
+                     //ss << number;
+                     char *c  ;
+                     char a= (char)(map[height][width] + 48);
+                     c= &a; 
+                                       
+               //const void* string =  (std::to_string(map[height][width])).c_str();
+                 std::cout<<"sending";
+								if (send(new_fd,c, sizeof(c), 0) == -1)
 										perror("send");
 							}
 						}
 
-            if (send(new_fd, "Hello, world!", 13, 0) == -1)
-                perror("send");
+            /*if (send(new_fd, "Hello, world!", 13, 0) == -1)
+                perror("send");*/
             close(new_fd);
             exit(0);
+        
+        if (!fork()) { // this is the child process
+            close(sockfd); // child doesn't need the listener
+
+						
         }
         close(new_fd);  // parent doesn't need this
     }
