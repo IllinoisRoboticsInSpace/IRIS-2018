@@ -102,6 +102,23 @@ public:
         && (kx>=0)
         && (ky>=0));
 	}
+	void compareMatrices(const matrix_tag & m) //Follows Dhruv's rules for comparing two maps for CASSIE and DAVE
+    {
+        //this->(1, 1)
+        for (int i = 0; i < nx; i++) {
+			for (int k = 0; k < ny; k++) {
+				int current = this->(i, k);
+				if (current != m(i, k)) { //There is a descrepancy between the two maps
+					if (current == map_occupied || m(i, k) == map_occupied) { //A new obstacle appeared
+						this->(i, k) = map_occupied;
+					}
+					else if (current == map_unoccupied || m(i, k) == map_unoccupied) { //No new obstacle...
+						this->(i, k) = map_unoccupied; // ...but there is a new unoccupied area
+					}
+				}
+			}
+	    }
+    }
 #if 1
     T & operator() (int ax,int ay)
     {

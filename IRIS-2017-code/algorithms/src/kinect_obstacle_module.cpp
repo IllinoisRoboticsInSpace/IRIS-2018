@@ -23,6 +23,9 @@ using namespace std;
 #include <libfreenect.h>//Kinect Input
 #include "Linear.hpp"//Mat3
 #include "data_structure.hpp"
+#include "tcpCassieC++.hpp"
+#include "tcpDaveC++.hpp"
+
 /**OPENGL**/
 /*#include <GL/glut.h>
 #include <GL/gl.h>
@@ -86,6 +89,9 @@ Vec3f downDirection(0,0,0);//static to prevent other files from seeing this
 /**LFN**/
 freenect_context* f_ctx=0;
 freenect_device* f_dev;
+
+/**This is the map last received from the other robot**/
+extern volatile matrix_tag& lastMap;
 
 
 /**================================================================================**/
@@ -219,7 +225,7 @@ void* thread_depth(void* arg)
                 ROS_INFO("\nNo Data From Kinect Accelerometer!");
 
             const int pointCount = csk::dimX*csk::dimY;
-            gradient.fill(map_defaultValue);
+            e.fill(map_defaultValue);
             height.fill(map_defaultValue);
 
             vector<Vec3f> pointCloud;
@@ -305,6 +311,12 @@ void* thread_depth(void* arg)
             {
                 std::cout<<"\033[0;31m"<<"KINECT: localization data is too old to merge historic: timestamp_location="<<robot_pos.millis<<" timestamp_current="<<millis()<<"\033[0m\n";
             }
+			
+			/*
+			At this point I want to make a comparison and merge between historic and the last map received from the other bot.
+			The goal is to make this stored map in sync with the other bot's map
+			*/
+			historic.compareMatrices(lastMap);
             
             if(pathplan_map_used)
     				{
