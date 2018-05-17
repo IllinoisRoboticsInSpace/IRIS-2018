@@ -91,7 +91,7 @@ freenect_context* f_ctx=0;
 freenect_device* f_dev;
 
 /**This is the map last received from the other robot**/
-extern volatile matrix_tag& lastMap;
+extern volatile MATRIX& lastMap;
 
 
 /**================================================================================**/

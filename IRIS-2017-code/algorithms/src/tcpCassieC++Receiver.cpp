@@ -48,7 +48,6 @@ int main(int argc, char *argv[])
         fprintf(stderr, "getaddrinfo: %s\n", gai_strerror(rv));
         return 1;
     }
-    //std::cout<< "2";
     // loop through all the results and connect to the first we can
     for(p = servinfo; p != NULL; p = p->ai_next) {
         if ((sockfd = socket(p->ai_family, p->ai_socktype,
@@ -78,32 +77,20 @@ int main(int argc, char *argv[])
     freeaddrinfo(servinfo); // all done with this structure
      int map[3][4];
   
-  char buf[MAXDATASIZE];
-                  if ((numbytes = recv(sockfd, buf, MAXDATASIZE-1, 0)) == -1) {
-                            perror("recv");
-                            exit(1);
-                    }
-                    buf[12] = '\0';
-    //std::cout<<buf;
+    char buf[MAXDATASIZE];
+    if ((numbytes = recv(sockfd, buf, MAXDATASIZE-1, 0)) == -1) {
+        perror("recv");
+        exit(1);
+    }
+    buf[12] = '\0';
     int height = 0;
     int width = 0;
-    for(;height<3; height++)
-       {
-						for(width=0;width<4; width++)
-							{
-                  map[height][width]= buf[height*4 + width]-48;
-             }
+    for(;height<3; height++) {
+		for(width=0;width<4; width++)
+		{
+            map[height][width]= buf[height*4 + width]-48;
         }
-  /*  height = 0;
-    width = 0;
-    for(;height<3; height++)
-       {
-						for(width=0;width<4; width++)
-							{
-                  std::cout<< map[height][width]<<" \n";
-             }
-        }
-*/                
+    }
  
     close(sockfd);
 
