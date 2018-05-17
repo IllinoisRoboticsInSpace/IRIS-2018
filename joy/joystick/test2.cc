@@ -26,7 +26,7 @@ using namespace std::chrono;
 int main(int argc, char** argv)
 {
   // Create an instance of Joystick
-  Joystick joystick("/dev/input/js0");
+  Joystick joystick("/dev/input/js1");
 
   // Ensure that it was found and that we can use it
   if (!joystick.isFound())
@@ -91,7 +91,7 @@ int main(int argc, char** argv)
 
     if(diff>=milliseconds(150)){
        //printf("!G 1 %d_!G 2 %d_\n",last_left,-last_right);
-//       (void)low_button;
+      // (void)low_button;
 //(void)med_button;
 (void)buc_button;
        printf("!%d,%d,%d,%d,%d,%d,%d\n",last_left,-last_right,bin_button, cam_button, coll_button,low_button,med_button);
