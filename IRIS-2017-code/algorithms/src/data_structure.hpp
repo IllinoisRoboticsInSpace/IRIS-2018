@@ -1,7 +1,18 @@
-1// Main data structure
+#ifndef _DATA_STRUCT_H_
+#define _DATA_STRUCT_H_
+// Main data structure
 #include "Map.hpp"//Map<T>
 
-
+enum {
+    START          = 0,
+    MOVING_TO_MINE = 1,
+    MOVING_TO_MEET = 2,
+    WAITING        = 3,
+    TRANSMITTING   = 4,
+    MOVING_TO_DUMP = 5,
+    DUMPING        = 6,
+    MINING         = 7
+} fsm_repre_t;
 
 struct navigation_and_mapping_data {
     volatile MATRIX* map;
@@ -26,3 +37,4 @@ extern navigation_and_mapping_data D;
 
 long int millis();
 
+#endif

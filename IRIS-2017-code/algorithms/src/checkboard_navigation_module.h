@@ -1,4 +1,6 @@
 //Checkboard navigation header
+#ifndef CB_NAVI_MOD_H_
+#define CB_NAVI_MOD_H_
 
 #include <string>
 
@@ -8,8 +10,10 @@ int get_desired_webcam();
 
 struct locate_actuator
 {
-    int collection;
-    int bin;
+    int height;
+    int front;
+    int collection; // collection bucket
+    int bin_or_still;
     int webcam;
 };
 
@@ -20,3 +24,4 @@ double fmod2pi(double v);
 
 void* init_kinect_mapping(void * stop_flag);
 
+#endif

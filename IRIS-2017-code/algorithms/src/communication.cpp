@@ -12,7 +12,7 @@
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
-#include <netdb.h> 
+#include <netdb.h>
 #include "checkboard_navigation_module.h"
 //#include "data_structure.hpp"
 //#include <ros/ros.h>
@@ -22,6 +22,7 @@ using namespace std;
 
 void* communication_motor(void * unused)
 {
+    /*
     printf("COMMUNICATION: start motor");
     tcp_send motor_serial((char*)"localhost",9002);
     while(1)
@@ -32,24 +33,28 @@ void* communication_motor(void * unused)
         //printf("%s",c);
         motor_serial.send(c, strlen(c));
         usleep(100*1000);
-
     }
+    */
 }
 
 void* communication_actuators(void * unused)
 {
     printf("COMMUNICATION: start actuators");
     tcp_send actuator_serial((char*)"localhost",9001);
-    while(1)
-    {
+    while(1) {
+        locate_motor desired_mtr = get_desired_motor();
         int desired_angle = get_desired_webcam();
         locate_actuator desired = get_desired_actuator();
-        char c[100];
-        sprintf(c,"!%d,%d,%d,%d#!\n",desired.collection,desired.bin,desired.webcam,desired_angle);
+        char c[200];
+        // motorL/motorR/act1/act2/act3/act4/act5/webcamangle#!
+        sprintf(c, "%d/%d/%d/%d/%d/%d/%d#!\r\n",
+            -desired_mtr.motor_left, desired_mtr.motor_right,
+            desired.bin_or_still, desired.webcam, desired.collection,
+            desired.front, desired.height
+            );
         //printf("%s",c);
         actuator_serial.send(c, strlen(c));
         usleep(100*1000);
-
     }
 }
 
