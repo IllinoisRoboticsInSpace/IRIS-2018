@@ -553,3 +553,32 @@ void* init_kinect_mapping(void * stop_flag)
 
     return 0;
 }
+/*
+Decodes the json String to get the map out of it
+*/
+void decodeShit(String json) {
+    map_json="{\"data\":[";
+    for(int px=-historicHalfSizeX; px<historicHalfSizeX; px++)
+    {
+        if(px!=-historicHalfSizeX) map_json+=",";
+        map_json+="[";
+        for(int py=0; py<historicSizeY; py++)
+        {
+            if(py!=0) map_json+=",";
+            int val=historic( px,py );
+            map_json+=std::to_string(val==map_defaultValue?9:val);
+        }
+        map_json+="]";
+    }
+    map_json+="],\"position\":["+std::to_string((int)xPos)+".0,"+std::to_string((int)yPos)+".0,"+std::to_string(robot_pos.t)+"]}";
+
+    int board[3][3]; //The array for the map
+    //As long as there is data available before the position data (As long as there is map data left)
+    
+    json = json.substr(10); //Gets rid of the {"data":[ at the beginning of the string
+    while (json.find("position") > something) {
+        std::string temp = json.substr(1, ());
+    }
+
+    map;
+}
