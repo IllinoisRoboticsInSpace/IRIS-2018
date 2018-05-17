@@ -35,7 +35,7 @@ int main(int argc, char** argv)
     exit(1);
   }
 
-  int last_left=0, last_right=0, uncapped=0, bin_button=1, cam_button=1, coll_button=1 ;
+  int last_left=0, last_right=0, uncapped=0, bin_button=1, cam_button=1, coll_button=1, low_button = 1, med_button=1, buc_button=1 ;
   auto start = high_resolution_clock::now();
   while (true)
   {
@@ -69,12 +69,21 @@ int main(int argc, char** argv)
       }
       else if (event.isAxis())
       {
-        //printf("Axis %u is at position %d\n", event.number, event.value);
+	//if(event.number!=0 && event.number!=4 &&event.number!=3 && event.number!=1)
+	//	printf("Axis %u is at position %d\n", event.number, event.value);
         int abb = (event.value>0?1:-1)*max(0,(event.value>0?event.value:-event.value)-100*64);
 		if(event.number==1)
 			last_left=max(-1000.,min(1000.,-abb/(uncapped?25:50)));
 		else if(event.number==4)
 			last_right=max(-1000.,min(1000.,-abb/(uncapped?25:50)));
+		else if(event.number==6)
+			low_button=event.value==0?1:(event.value<0?0:2);
+		else if(event.number==7)
+			med_button=event.value==0?1:(event.value<0?2:0);
+		else if(event.number==5)
+			buc_button=(event.value>0?2:1);
+		else if(event.number==2)
+			buc_button=(event.value>0?0:1);		
       }
     }
     auto curr = high_resolution_clock::now();
@@ -82,7 +91,7 @@ int main(int argc, char** argv)
 
     if(diff>=milliseconds(150)){
        //printf("!G 1 %d_!G 2 %d_\n",last_left,-last_right);
-       printf("!%d,%d,%d,%d,%d\n",last_left,-last_right,bin_button, cam_button, coll_button);
+       printf("!%d,%d,%d,%d,%d,%d,%d,%d\n",last_left,-last_right,bin_button, cam_button, coll_button,low_button,med_button,buc_button);
        fflush(stdout);
        start= curr;
     }
