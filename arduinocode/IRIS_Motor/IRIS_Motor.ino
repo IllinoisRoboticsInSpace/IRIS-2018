@@ -10,6 +10,7 @@
 #define DIR2 44
 #define BRAKE2 46
 int actuatortest = 10;
+int actuatorbrake = 11;
 Servo myservo;
 String data;
 unsigned prevmillis = 0;
@@ -29,7 +30,8 @@ void setup() {
   delay(15);
   myservo.write(0);
   pinMode(actuatortest, OUTPUT);
-
+  pinMode(actuatorbrake, OUTPUT);
+  digitalWrite(actuatorbrake, HIGH);
   actuator.init(
         SPEED, DIR, BRAKE, //pins
         194, // extend_speed (forward)
@@ -87,18 +89,22 @@ void loop() {
 
   if (check) {
     Serial2.println(data.substring(0, data.length() - 1));
+    //     0/0/1/1/1
     int index1 = data.indexOf("/");
     int index2 = data.indexOf("/",index1+1);
     int index3 = data.indexOf("/",index2+1);
     int index4 = data.indexOf("/",index3+1);
     int index5 = data.indexOf("/",index4+1);
+    int index6 = data.indexOf("/",index5+1);
     int motor1 = data.substring(0, index1).toInt()/12;
     int motor2 = -data.substring(index1+1, index2).toInt()/12;
     int actuator1 = data.substring(index2+1, index3).toInt();
     int actuator2 = data.substring(index3+1, index4).toInt();
     int actuator3 = data.substring(index4+1, index5).toInt();
-    int servo = data.substring(index5+1).toInt()/2;
-    Serial.print(data);
+    int actuator4 = data.substring(index5+1, index6).toInt();
+    int servo = data.substring(index6+1).toInt()/2;
+    Serial.println(data);
+    /*
     Serial.print(motor1);
     Serial.print(motor2);
     Serial1.write(0);
@@ -111,6 +117,8 @@ void loop() {
     Serial.println(actuator1);
     Serial.println(actuator2);
     Serial.println(actuator3);
+    Serial.println(actuator4);
+    */
     if (actuator1 == 0)
     {
       actuator.retract();
@@ -159,29 +167,17 @@ void loop() {
       analogWrite(SPEED2, 0);          //Stop actuator
       digitalWrite(BRAKE2, HIGH != 0);
     }
-/*
-    if (actuator2 == 0)
-    {
-      analogWrite(actuatortest, 127);
+    if(actuator4==2){
+      digitalWrite(actuatorbrake,LOW);
+      digitalWrite(actuatortest, HIGH);
     }
-    else if (actuator2 == 1)
-    {
-      analogWrite(actuatortest, 0);
-    }
-    else if (actuator2 == 2)
-    {
-      analogWrite(actuatortest, 255);
+    else if(actuator4==0){
+      digitalWrite(actuatorbrake,LOW);
+      digitalWrite(actuatortest, LOW);
     }
     else{
-      analogWrite(actuatortest, 127);
+      digitalWrite(actuatorbrake,HIGH);
     }
-*/
-    //Serial2.println( "Command: " + command + "Value: " + value + "Svalue: " + svalue); //FOR DEBUG PURPOSES: WRITES VALUE READ TO SERIAL 2
-    //Serial2.println(data); //FOR DEBUG PURPOSES: WRITES VALUE READ TO SERIAL 2
-    //Serial2.println(data); //FOR DEBUG PURPOSES: WRITES VALUE READ TO SERIAL 2
-    //speed = value (127 = max forward, -128 = max backwards)
-    ///Serial.print(command);
   }
-  //Serial2.println(command);
 
 }
