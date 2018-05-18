@@ -54,7 +54,7 @@ public:
     void create(int ax,int bx,int ay,int by)
     {
         int oldsize=nx*ny;
-        dx=-ax
+        dx=-ax;
         dy=-ay;
         nx=bx-ax+1;
         ny=by-ay+1;
