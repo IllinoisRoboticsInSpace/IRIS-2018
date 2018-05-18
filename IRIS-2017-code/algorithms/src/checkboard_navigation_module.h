@@ -13,7 +13,7 @@ struct locate_actuator
     int height;
     int front;
     int collection; // collection bucket
-    int bin_or_still;
+    int bin;
     int webcam;
 };
 

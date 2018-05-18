@@ -49,7 +49,7 @@ void* communication_actuators(void * unused)
         // motorL/motorR/act1/act2/act3/act4/act5/webcamangle#!
         sprintf(c, "%d/%d/%d/%d/%d/%d/%d#!\r\n",
             -desired_mtr.motor_left, desired_mtr.motor_right,
-            desired.bin_or_still, desired.webcam, desired.collection,
+            desired.bin, desired.webcam, desired.collection,
             desired.front, desired.height
             );
         //printf("%s",c);

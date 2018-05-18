@@ -23,7 +23,6 @@ using namespace std;
 #include <libfreenect.h>//Kinect Input
 #include "Linear.hpp"//Mat3
 #include "data_structure.hpp"
-
 /**OPENGL**/
 /*#include <GL/glut.h>
 #include <GL/gl.h>
@@ -220,7 +219,7 @@ void* thread_depth(void* arg)
                 ROS_INFO("\nNo Data From Kinect Accelerometer!");
 
             const int pointCount = csk::dimX*csk::dimY;
-            e.fill(map_defaultValue);
+            gradient.fill(map_defaultValue);
             height.fill(map_defaultValue);
 
             vector<Vec3f> pointCloud;
