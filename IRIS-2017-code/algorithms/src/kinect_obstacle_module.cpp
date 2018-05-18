@@ -23,8 +23,6 @@ using namespace std;
 #include <libfreenect.h>//Kinect Input
 #include "Linear.hpp"//Mat3
 #include "data_structure.hpp"
-#include "tcpCassieC++.hpp"
-#include "tcpDaveC++.hpp"
 
 /**OPENGL**/
 /*#include <GL/glut.h>
@@ -89,9 +87,6 @@ Vec3f downDirection(0,0,0);//static to prevent other files from seeing this
 /**LFN**/
 freenect_context* f_ctx=0;
 freenect_device* f_dev;
-
-/**This is the map last received from the other robot**/
-extern volatile MATRIX& lastMap;
 
 
 /**================================================================================**/
@@ -311,12 +306,6 @@ void* thread_depth(void* arg)
             {
                 std::cout<<"\033[0;31m"<<"KINECT: localization data is too old to merge historic: timestamp_location="<<robot_pos.millis<<" timestamp_current="<<millis()<<"\033[0m\n";
             }
-			
-			/*
-			At this point I want to make a comparison and merge between historic and the last map received from the other bot.
-			The goal is to make this stored map in sync with the other bot's map
-			*/
-			historic.compareMatrices(lastMap);
             
             if(pathplan_map_used)
     				{
@@ -552,33 +541,4 @@ void* init_kinect_mapping(void * stop_flag)
     free(pMapHTTP);
 
     return 0;
-}
-/*
-Decodes the json String to get the map out of it
-*/
-void decodeShit(String json) {
-    map_json="{\"data\":[";
-    for(int px=-historicHalfSizeX; px<historicHalfSizeX; px++)
-    {
-        if(px!=-historicHalfSizeX) map_json+=",";
-        map_json+="[";
-        for(int py=0; py<historicSizeY; py++)
-        {
-            if(py!=0) map_json+=",";
-            int val=historic( px,py );
-            map_json+=std::to_string(val==map_defaultValue?9:val);
-        }
-        map_json+="]";
-    }
-    map_json+="],\"position\":["+std::to_string((int)xPos)+".0,"+std::to_string((int)yPos)+".0,"+std::to_string(robot_pos.t)+"]}";
-
-    int board[3][3]; //The array for the map
-    //As long as there is data available before the position data (As long as there is map data left)
-    
-    json = json.substr(10); //Gets rid of the {"data":[ at the beginning of the string
-    while (json.find("position") > something) {
-        std::string temp = json.substr(1, ());
-    }
-
-    map;
 }

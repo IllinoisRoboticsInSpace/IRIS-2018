@@ -9,7 +9,6 @@
 #include "checkboard_navigation_module.h"
 #include "data_structure.hpp"
 #include "communication.hpp"
-#include "tcpDaveC++.hpp"
 
 using namespace std;
 
@@ -53,7 +52,6 @@ int main(int argc, char **argv)
     pthread_t fsm_t;
     pthread_t communication_motor_t;
     pthread_t communication_actuators_t;
-	pthread_t tcpDave_t;
     
 		//pthread_init();
     int comm1 = pthread_create(&communication_motor_t, NULL, communication_motor, 0);
@@ -62,8 +60,7 @@ int main(int argc, char **argv)
     int navigation = pthread_create(&navigation_t, NULL, init_kinect_mapping, (void*)&stop_flag);
     int path = pthread_create(&path_planning_t, NULL, path_planning, 0);
     int fsm = pthread_create(&fsm_t, NULL, FSM, 0);
-	int tcpDave = pthread_create(&tcpDave_t, NULL, main, 0);
-    if(navigation || chessboard || path || fsm || comm1 || comm2 || tcpDave)
+    if(navigation || chessboard || path || fsm || comm1 || comm2)
         exit(EXIT_FAILURE);
 
     while (1)
@@ -79,7 +76,6 @@ int main(int argc, char **argv)
     pthread_join(fsm_t, 0);
     pthread_join(communication_motor_t, 0);
     pthread_join(communication_actuators_t, 0);
-	pthread_join(tcpDave, 0);
 
 
 }
