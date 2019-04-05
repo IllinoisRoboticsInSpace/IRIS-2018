@@ -11,6 +11,8 @@
 #define BRAKE2 46
 int actuatortest = 10;
 int actuatorbrake = 11;
+int actuatortest1 = 2;
+int actuatorbrake1 = 3;
 Servo myservo;
 String data;
 unsigned prevmillis = 0;
@@ -23,14 +25,17 @@ void setup() {
   Serial1.begin(9600);
   Serial2.begin(9600); //FOR DEBUG PURPOSES
   //Sets the mode of the motors to mode3 (check MD49 datasheet)
-  Serial1.write(0);
-  Serial1.write(52);
-  Serial1.write(1);
+//  Serial1.write(0);
+//  Serial1.write(52);
+//  Serial1.write(1);
   myservo.attach(9);
   delay(15);
   myservo.write(0);
   pinMode(actuatortest, OUTPUT);
   pinMode(actuatorbrake, OUTPUT);
+  pinMode(actuatortest1, OUTPUT);
+  pinMode(actuatorbrake1, OUTPUT);
+  digitalWrite(actuatorbrake1,HIGH);
   digitalWrite(actuatorbrake, HIGH);
   actuator.init(
         SPEED, DIR, BRAKE, //pins
@@ -96,17 +101,22 @@ void loop() {
     int index4 = data.indexOf("/",index3+1);
     int index5 = data.indexOf("/",index4+1);
     int index6 = data.indexOf("/",index5+1);
-    int motor1 = data.substring(0, index1).toInt()/12;
-    int motor2 = -data.substring(index1+1, index2).toInt()/12;
+    int index7 = data.indexOf("/",index6+1);    
+    int motor1 = data.substring(0, index1).toInt();
+    int motor2 = data.substring(index1+1, index2).toInt();
     int actuator1 = data.substring(index2+1, index3).toInt();
     int actuator2 = data.substring(index3+1, index4).toInt();
     int actuator3 = data.substring(index4+1, index5).toInt();
     int actuator4 = data.substring(index5+1, index6).toInt();
-    int servo = data.substring(index6+1).toInt()/2;
+    int actuator5 = data.substring(index6+1, index7).toInt();
+    int servo = data.substring(index7+1).toInt()/2;
     Serial.println(data);
-    /*
+    
     Serial.print(motor1);
     Serial.print(motor2);
+
+    motorControl(motor1,motor2,130);
+    /*
     Serial1.write(0);
     Serial1.write(49);
     Serial1.write(motor1);
@@ -114,11 +124,12 @@ void loop() {
     Serial1.write(50);
     Serial1.write(motor2);
     myservo.write(servo);
+    */
     Serial.println(actuator1);
     Serial.println(actuator2);
     Serial.println(actuator3);
     Serial.println(actuator4);
-    */
+
     if (actuator1 == 0)
     {
       actuator.retract();
@@ -178,6 +189,63 @@ void loop() {
     else{
       digitalWrite(actuatorbrake,HIGH);
     }
+    if(actuator5==2){
+      digitalWrite(actuatorbrake1,LOW);
+      digitalWrite(actuatortest1, HIGH);
+    }
+    else if(actuator5==0){
+      digitalWrite(actuatorbrake1,LOW);
+      digitalWrite(actuatortest1, LOW);
+    }
+    else{
+      digitalWrite(actuatorbrake1,HIGH);
+    }
   }
 
+}
+
+
+int motorControl(double left, double right, int addr) {
+ int command;
+ int data;
+
+ right = 0 - right;
+
+ boolean leftForward = left > 0;
+ boolean rightForward = right > 0;
+
+ left = abs(left);
+ left = left / 1000 * 127;
+ right = abs(right);
+ right = right / 1000 * 127;
+
+
+ if (leftForward) {
+   command = 0;
+ } else {
+   command = 1;
+ }
+
+
+ data = left;
+
+ Serial.println(String(addr) + "\n" + String(command) + "\n" + String(data) + "\n" + String(((addr + command + data) & 127)));
+ Serial1.write((int)addr);
+ Serial1.write((int)command);
+ Serial1.write((int)data);
+ Serial1.write((int)((addr + command + data) & 127));
+
+ if (rightForward) {
+   command = 4;
+ } else {
+   command = 5;
+ }
+
+ data = right;
+
+ Serial.println(String(addr) + "\n" + String(command) + "\n" + String(data) + "\n" + String(((addr + command + data) & 127)));
+ Serial1.write((int)addr);
+ Serial1.write((int)command);
+ Serial1.write((int)data);
+ Serial1.write((int)((addr + command + data) & 127));
 }
