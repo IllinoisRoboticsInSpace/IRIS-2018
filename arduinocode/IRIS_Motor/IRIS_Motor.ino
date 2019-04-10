@@ -58,7 +58,9 @@ void setup() {
 }
 
 void loop() {
-  /*Takes in serial string input of the form: !command/value/servovalue!
+
+//   Serial.println("Looping.../");
+  /*Takes in serial string input of the form: !command/value/servovalue#!
     command = go, stop, or turn
     value: [-128,127]
     servovalue: [0, 360]
@@ -90,9 +92,10 @@ void loop() {
     // Check we got good data
     check = data.endsWith("#");
   }
-
-
+  //  Command format:
+  //  !motor1/motor2/act1/act2/act3/act4/act5/servo#!
   if (check) {
+    Serial.println("We have data");
     Serial2.println(data.substring(0, data.length() - 1));
     //     0/0/1/1/1
     int index1 = data.indexOf("/");
@@ -112,7 +115,9 @@ void loop() {
     int servo = data.substring(index7+1).toInt()/2;
     Serial.println(data);
     
-    Serial.print(motor1);
+    Serial.print("motor1: ");
+    Serial.println(motor1);
+    Serial.print("motor2: ");
     Serial.print(motor2);
 
     motorControl(motor1,motor2,130);
@@ -125,9 +130,13 @@ void loop() {
     Serial1.write(motor2);
     myservo.write(servo);
     */
+    Serial.print("actuator1: ");
     Serial.println(actuator1);
+    Serial.print("actuator2: ");
     Serial.println(actuator2);
+    Serial.print("actuator3: ");
     Serial.println(actuator3);
+    Serial.print("actuator4: ");
     Serial.println(actuator4);
 
     if (actuator1 == 0)
@@ -229,7 +238,7 @@ int motorControl(double left, double right, int addr) {
 
  data = left;
 
- Serial.println(String(addr) + "\n" + String(command) + "\n" + String(data) + "\n" + String(((addr + command + data) & 127)));
+ Serial.println("addr: " + String(addr) + "\n" + "command: " + String(command) + "\n" + "data: " + String(data) + "\n" + "All added and bitmasked with 0x7F: " + String(((addr + command + data) & 127)));
  Serial1.write((int)addr);
  Serial1.write((int)command);
  Serial1.write((int)data);
